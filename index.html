@@ -70,87 +70,6 @@
   <label for="date">操作日</label>
   <input type="date" id="date" />
 
-  <script>
-    // 自動填入今天作為預設操作日
-    window.addEventListener('DOMContentLoaded', () => {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
-    });
-  // 加入訊息到歷史紀錄
-function addToHistory(msg) {
-  const historyList = document.getElementById('historyList');
-  const li = document.createElement('li');
-  li.style.border = '1px solid #ccc';
-  li.style.padding = '0.5rem';
-  li.style.marginTop = '0.5rem';
-  li.style.borderRadius = '0.5rem';
-  li.style.backgroundColor = '#fff8f0';
-  li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
-
-  const pre = document.createElement('pre');
-  pre.textContent = msg;
-
-  const copyBtn = document.createElement('button');
-  copyBtn.textContent = '複製';
-  copyBtn.style.marginTop = '0.5rem';
-  copyBtn.style.backgroundColor = '#d8c3a5';
-  copyBtn.style.border = 'none';
-  copyBtn.style.padding = '0.3rem 0.8rem';
-  copyBtn.style.borderRadius = '0.4rem';
-  copyBtn.style.cursor = 'pointer';
-  copyBtn.onclick = () => {
-    const hidden = document.getElementById('hiddenCopy');
-    hidden.value = msg;
-    hidden.select();
-    document.execCommand("copy");
-    hidden.blur();
-    alert("已複製！");
-  };
-
-  li.appendChild(pre);
-  li.appendChild(copyBtn);
-  historyList.prepend(li);
-
-  saveHistory();
-}
-
-// 儲存歷史紀錄到 localStorage
-function saveHistory() {
-  const items = [...document.querySelectorAll('#historyList pre')].map(pre => pre.textContent);
-  localStorage.setItem('messageHistory', JSON.stringify(items));
-}
-
-// 讀取歷史紀錄
-function loadHistory() {
-  const data = localStorage.getItem('messageHistory');
-  if (data) {
-    const messages = JSON.parse(data);
-    messages.reverse().forEach(addToHistory);
-  }
-}
-
-// 清除紀錄
-function clearHistory() {
-  if (confirm('確定要清除所有歷史紀錄嗎？')) {
-    document.getElementById('historyList').innerHTML = '';
-    localStorage.removeItem('messageHistory');
-  }
-}
-
-// 初始化載入
-window.addEventListener('DOMContentLoaded', () => {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
-  loadHistory();
-});
-</script>
-
   <label for="stage">培養日（D幾）</label>
   <select id="stage">
     <option value="3">D3</option>
@@ -178,13 +97,22 @@ window.addEventListener('DOMContentLoaded', () => {
   </div>
 
   <script>
+    // 自動填入今天作為預設操作日 + 載入歷史
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
+      loadHistory();
+    });
+
     function formatDatePlus(dateStr, days) {
       const d = new Date(dateStr);
       d.setDate(d.getDate() + days);
-      const yyyy = d.getFullYear();
       const mm = (d.getMonth() + 1).toString().padStart(2, '0');
       const dd = d.getDate().toString().padStart(2, '0');
-      return `${yyyy}/${mm}/${dd}`;
+      return `${mm}/${dd}`;
     }
 
     function generateMessage() {
@@ -198,7 +126,7 @@ window.addEventListener('DOMContentLoaded', () => {
       let message = '';
 
       const datePlus = (d) => formatDatePlus(date, d);
-const queryDateByStage = () => formatDatePlus(date, 8 - parseInt(stage));
+      const queryDateByStage = () => formatDatePlus(date, 8 - parseInt(stage));
 
       if (type === 'D1（D5~D7 冷凍）') {
         message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${datePlus(4)}~${datePlus(6)} 之間幫胚胎進行冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${datePlus(7)} 17:00後，在APP上査詢，謝謝您。`;
@@ -232,6 +160,63 @@ const queryDateByStage = () => formatDatePlus(date, 8 - parseInt(stage));
       document.execCommand("copy");
       hidden.blur();
       alert('已複製！');
+    }
+
+    function addToHistory(msg) {
+      const historyList = document.getElementById('historyList');
+      const li = document.createElement('li');
+      li.style.border = '1px solid #ccc';
+      li.style.padding = '0.5rem';
+      li.style.marginTop = '0.5rem';
+      li.style.borderRadius = '0.5rem';
+      li.style.backgroundColor = '#fff8f0';
+      li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+
+      const pre = document.createElement('pre');
+      pre.textContent = msg;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = '複製';
+      copyBtn.style.marginTop = '0.5rem';
+      copyBtn.style.backgroundColor = '#d8c3a5';
+      copyBtn.style.border = 'none';
+      copyBtn.style.padding = '0.3rem 0.8rem';
+      copyBtn.style.borderRadius = '0.4rem';
+      copyBtn.style.cursor = 'pointer';
+      copyBtn.onclick = () => {
+        const hidden = document.getElementById('hiddenCopy');
+        hidden.value = msg;
+        hidden.select();
+        document.execCommand("copy");
+        hidden.blur();
+        alert("已複製！");
+      };
+
+      li.appendChild(pre);
+      li.appendChild(copyBtn);
+      historyList.prepend(li);
+
+      saveHistory();
+    }
+
+    function saveHistory() {
+      const items = [...document.querySelectorAll('#historyList pre')].map(pre => pre.textContent);
+      localStorage.setItem('messageHistory', JSON.stringify(items));
+    }
+
+    function loadHistory() {
+      const data = localStorage.getItem('messageHistory');
+      if (data) {
+        const messages = JSON.parse(data);
+        messages.reverse().forEach(addToHistory);
+      }
+    }
+
+    function clearHistory() {
+      if (confirm('確定要清除所有歷史紀錄嗎？')) {
+        document.getElementById('historyList').innerHTML = '';
+        localStorage.removeItem('messageHistory');
+      }
     }
   </script>
 </body>
