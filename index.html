@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>報胚訊息產生器</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #fdfaf7;
+      color: #4b3b30;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      background-color: #d8c3a5;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #e0d6cd;
+      border-radius: 1rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>報胚訊息產生器</h1>
+
+  <label for="type">回報類型</label>
+  <select id="type">
+    <option>D1（D5~D7 冷凍）</option>
+    <option>D1（D5~D7 切片＋冷凍）</option>
+    <option>D1（D5 植入）</option>
+    <option>D3 冷凍（無觀察中）</option>
+    <option>D5 冷凍（有觀察中）</option>
+    <option>D5 冷凍（無觀察中）</option>
+    <option>D5 切片＋冷凍（有觀察中）</option>
+    <option>D5 切片＋冷凍（無觀察中）</option>
+    <option>D5 冷凍含部分切片</option>
+  </select>
+
+  <label for="name">姓名</label>
+  <input type="text" id="name" />
+
+  <label for="date">操作日（D1/D3/D5）</label>
+  <input type="date" id="date" />
+
+  <label for="num1">成功受精／冷凍顆數（依類型而定）</label>
+  <input type="number" id="num1" />
+
+  <label for="num2">切片顆數（若有）</label>
+  <input type="number" id="num2" />
+
+  <button onclick="generateMessage()">產生訊息</button>
+  <button onclick="copyOutput()">複製訊息</button>
+
+  <div id="output"></div>
+  <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
+
+  <script>
+    function formatDatePlus(dateStr, days) {
+      const d = new Date(dateStr);
+      d.setDate(d.getDate() + days);
+      const yyyy = d.getFullYear();
+      const mm = (d.getMonth() + 1).toString().padStart(2, '0');
+      const dd = d.getDate().toString().padStart(2, '0');
+      return `${yyyy}/${mm}/${dd}`;
+    }
+
+    function generateMessage() {
+      const type = document.getElementById('type').value;
+      const name = document.getElementById('name').value.trim();
+      const date = document.getElementById('date').value;
+      const num1 = document.getElementById('num1').value;
+      const num2 = document.getElementById('num2').value;
+
+      let message = '';
+
+      const datePlus = (d) => formatDatePlus(date, d);
+
+      if (type === 'D1（D5~D7 冷凍）') {
+        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${datePlus(4)}~${datePlus(6)} 之間幫胚胎進行冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${datePlus(7)} 17:00後，在APP上査詢，謝謝您。`;
+      } else if (type === 'D1（D5~D7 切片＋冷凍）') {
+        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${datePlus(4)}~${datePlus(6)} 之間幫胚胎進行切片及冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${datePlus(7)} 17:00後，在APP上査詢，謝謝您。`;
+      } else if (type === 'D1（D5 植入）') {
+        message = `${name}您好，\n通知您，這次療程共有 ${num1} 顆卵子成功受精囉！\n胚胎的發育是一個自然篩選的過程，我們會細心呵護每一顆珍貴的胚胎寶寶。\n我們預計在 ${datePlus(4)} 進行胚胎植入，請您保持輕鬆愉快的心情，如有任何問題，歡迎與我們聯繫。\n祝您一切順利！`;
+      } else if (type.includes('D3')) {
+        message = `${name}您好，今天是胚胎培養的第 3 天，實驗室和您更新胚胎的狀況：\n本次療程有幫您冷凍 ${num1} 顆胚胎，\n詳細的冷凍胚胎的等級和照片您可於 ${datePlus(1)} 17:00 後，在APP上查詢，謝謝您。`;
+      } else if (type.includes('部分切片')) {
+        message = `${name}您好，今天是胚胎培養的第 5 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶，其中有 ${num2} 顆是有切片的，\n冷凍胚胎的等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type.includes('切片＋冷凍（有觀察中）')) {
+        message = `${name}您好，今天是胚胎培養的第 5 天，和您更新目前的狀況：\n我們今天已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n提醒您，由於還有胚胎仍在培養與觀察中，因此最終的冷凍顆數、胚胎等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type.includes('切片＋冷凍（無觀察中）')) {
+        message = `${name}您好，今天是胚胎培養的第 5 天，和您更新目前的狀況：\n我們已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n冷凍胚胎的等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type.includes('冷凍（有觀察中）')) {
+        message = `${name}您好，今天是胚胎培養的第 5 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶。\n另外，還有胚胎仍在培養與觀察中，因此最終的冷凍顆數、胚胎等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type.includes('冷凍（無觀察中）')) {
+        message = `${name}您好，今天是胚胎培養的第 5 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶，\n冷凍胚胎的等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      }
+
+      document.getElementById('output').textContent = message;
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('output').textContent;
+      const hidden = document.getElementById('hiddenCopy');
+      hidden.value = text;
+      hidden.select();
+      document.execCommand("copy");
+      alert('已複製！');
+    }
+  </script>
+</body>
+</html>
