@@ -55,7 +55,6 @@
 </head>
 <body>
   <h1>報胚訊息產生器</h1>
-
   <label for="type">回報類型</label>
   <select id="type">
     <option>D1（D5~D7 冷凍）</option>
@@ -66,15 +65,13 @@
     <option>D5 冷凍（無觀察中）</option>
     <option>D5 切片＋冷凍（有觀察中）</option>
     <option>D5 切片＋冷凍（無觀察中）</option>
-    <option>D5 冷凍含部分切片</option>
+    <option>D5 冷凍含部分切片（有觀察中）</option>
+    <option>D5 冷凍含部分切片（無觀察中）</option>
   </select>
-
   <label for="name">姓名</label>
   <input type="text" id="name" />
-
   <label for="date">操作日</label>
   <input type="date" id="date" />
-
   <label for="stage">培養日（D幾）</label>
   <select id="stage">
     <option value="3">D3</option>
@@ -82,45 +79,33 @@
     <option value="6">D6</option>
     <option value="7">D7</option>
   </select>
-
   <label for="num1">成功受精／冷凍顆數（依類型而定）</label>
   <input type="number" id="num1" />
-
   <label for="num2">切片顆數（若有）</label>
   <input type="number" id="num2" />
-
   <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
     <button onclick="generateMessage()">產生訊息</button>
     <button onclick="copyOutput()">複製訊息</button>
   </div>
-
   <div id="output"></div>
   <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
-
   <div id="history" style="margin-top:2rem; background-color: #f5eee6; padding: 1rem; border-radius: 1rem; border: 1px solid #e0d6cd;">
     <h2 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">歷史紀錄</h2>
     <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
     <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #e4d1bd; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; width: 100%;">清除歷史紀錄</button>
   </div>
-
   <script>
-    // 自動填入今天作為預設操作日 + 載入歷史
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
       const today = new Date();
       const yyyy = today.getFullYear();
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
-      document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
+      const dateInput = document.getElementById('date');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+      }
       loadHistory();
     });
-
-    function formatDatePlus(dateStr, days) {
-      const d = new Date(dateStr);
-      d.setDate(d.getDate() + days);
-      const mm = (d.getMonth() + 1).toString().padStart(2, '0');
-      const dd = d.getDate().toString().padStart(2, '0');
-      return `${mm}/${dd}`;
-    }
 
     function generateMessage() {
       const type = document.getElementById('type').value;
@@ -130,29 +115,38 @@
       const num2 = document.getElementById('num2').value;
       const stage = document.getElementById('stage').value;
 
-      let message = '';
+      const formatDatePlus = (base, days) => {
+        const d = new Date(base);
+        d.setDate(d.getDate() + days);
+        return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
+      };
 
-      const datePlus = (d) => formatDatePlus(date, d);
       const queryDateByStage = () => formatDatePlus(date, 8 - parseInt(stage));
 
+      let message = '';
+
       if (type === 'D1（D5~D7 冷凍）') {
-        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${datePlus(4)}~${datePlus(6)} 之間幫胚胎進行冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${datePlus(7)} 17:00後，在APP上査詢，謝謝您。`;
+        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${formatDatePlus(date, 4)}~${formatDatePlus(date, 6)} 之間幫胚胎進行冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${formatDatePlus(date, 7)} 17:00後，在APP上査詢，謝謝您。`;
       } else if (type === 'D1（D5~D7 切片＋冷凍）') {
-        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${datePlus(4)}~${datePlus(6)} 之間幫胚胎進行切片及冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${datePlus(7)} 17:00後，在APP上査詢，謝謝您。`;
+        message = `${name}您好，\n通知您這次療程一共有 ${num1} 顆卵子成功受精囉!\n胚胎發育是一個動態自我篩選的過程，我們會持續呵護胚胎寶寶們。\n我們預計在 ${formatDatePlus(date, 4)}~${formatDatePlus(date, 6)} 之間幫胚胎進行切片及冷凍，\n最後的冷凍顆數、胚胎的等級和照片您可於 ${formatDatePlus(date, 7)} 17:00後，在APP上査詢，謝謝您。`;
       } else if (type === 'D1（D5 植入）') {
-        message = `${name}您好，\n通知您，這次療程共有 ${num1} 顆卵子成功受精囉！\n胚胎的發育是一個自然篩選的過程，我們會細心呵護每一顆珍貴的胚胎寶寶。\n我們預計在 ${datePlus(4)} 進行胚胎植入，請您保持輕鬆愉快的心情，如有任何問題，歡迎與我們聯繫。\n祝您一切順利！`;
-      } else if (type.includes('D3')) {
-        message = `${name}您好，今天是胚胎培養的第 3 天，實驗室和您更新胚胎的狀況：\n本次療程有幫您冷凍 ${num1} 顆胚胎，\n詳細的冷凍胚胎的等級和照片您可於 ${datePlus(1)} 17:00 後，在APP上查詢，謝謝您。`;
-      } else if (type.includes('部分切片')) {
-        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶，其中有 ${num2} 顆是有切片的，\n冷凍胚胎的等級及照片，您可於 ${queryDateByStage()} 17:00 後在APP上查詢，謝謝您。`;
-      } else if (type.includes('切片＋冷凍（有觀察中）')) {
-        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n提醒您，由於還有胚胎仍在培養與觀察中，因此最終的冷凍顆數、胚胎等級及照片，您可於 ${queryDateByStage()} 17:00 後在APP上查詢，謝謝您。`;
-      } else if (type.includes('切片＋冷凍（無觀察中）')) {
-        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n冷凍胚胎的等級及照片，您可於 ${queryDateByStage()} 17:00 後在APP上查詢，謝謝您。`;
-      } else if (type.includes('冷凍（有觀察中）')) {
+        message = `${name}您好，\n通知您，這次療程共有 ${num1} 顆卵子成功受精囉！\n胚胎的發育是一個自然篩選的過程，我們會細心呵護每一顆珍貴的胚胎寶寶。\n我們預計在 ${formatDatePlus(date, 4)} 進行胚胎植入，請您保持輕鬆愉快的心情，如有任何問題，歡迎與我們聯繫。\n祝您一切順利！`;
+      } else if (type === 'D3 冷凍（無觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 3 天，實驗室和您更新胚胎的狀況：\n本次療程有幫您冷凍 ${num1} 顆胚胎，\n詳細的冷凍胚胎的等級和照片您可於 ${formatDatePlus(date, 1)} 17:00 後，在APP上查詢，謝謝您。`;
+      } else if (type === 'D5 冷凍（有觀察中）') {
         message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶。\n另外，還有胚胎仍在培養與觀察中，因此最終的冷凍顆數、胚胎等級及照片，您可於 ${queryDateByStage()} 17:00 後在APP上查詢，謝謝您。`;
-      } else if (type.includes('冷凍（無觀察中）')) {
-        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶，\n冷凍胚胎的等級及照片，您可於 ${datePlus(3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type === 'D5 冷凍（無觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您冷凍 ${num1} 顆胚胎寶寶，\n冷凍胚胎的等級及照片，您可於 ${formatDatePlus(date, 3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type === 'D5 切片＋冷凍（有觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們今天已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n提醒您，由於還有胚胎仍在培養與觀察中，因此最終的冷凍顆數、胚胎等級及照片，您可於 ${queryDateByStage()} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type === 'D5 切片＋冷凍（無觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，和您更新目前的狀況：\n我們已經為您切片及冷凍 ${num1} 顆胚胎寶寶。\n冷凍胚胎的等級及照片，您可於 ${formatDatePlus(date, 3)} 17:00 後在APP上查詢，謝謝您。`;
+      } else if (type === 'D5 冷凍含部分切片（有觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，實驗室和您更新胚胎的狀況：\n今日有幫您冷凍 ${num1} 顆，其中切片的胚胎寶寶有 ${num2} 顆，\n提醒您，由於尚有胚胎仍在培養觀察中，因此最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDateByStage()} 17:00 後，在APP上查詢， 謝謝您。`;
+      } else if (type === 'D5 冷凍含部分切片（無觀察中）') {
+        message = `${name}您好，今天是胚胎培養的第 ${stage} 天，實驗室和您更新胚胎的狀況：\n通知您此次療程有幫您冷凍 ${num1} 顆，其中有 ${num2} 顆胚胎是有切片的，\n詳細冷凍胚胎的等級和照片您可於 ${formatDatePlus(date, 3)} 17:00 後，在APP上查詢， 謝謝您。`;
+      } else {
+        message = '（這裡會顯示產生的訊息）';
       }
 
       document.getElementById('output').textContent = message;
@@ -167,6 +161,11 @@
       document.execCommand("copy");
       hidden.blur();
       alert('已複製！');
+    }
+
+    function clearHistory() {
+      document.getElementById('historyList').innerHTML = '';
+      localStorage.removeItem('messageHistory');
     }
 
     function addToHistory(msg) {
@@ -216,13 +215,6 @@
       if (data) {
         const messages = JSON.parse(data);
         messages.reverse().forEach(addToHistory);
-      }
-    }
-
-    function clearHistory() {
-      if (confirm('確定要清除所有歷史紀錄嗎？')) {
-        document.getElementById('historyList').innerHTML = '';
-        localStorage.removeItem('messageHistory');
       }
     }
   </script>
