@@ -4,7 +4,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>報胚訊息產生器</title>
+  <title>📜報胚訊息產生器</title>
   <style>
     body {
       font-family: "Noto Sans TC", sans-serif;
@@ -58,38 +58,38 @@
   </style>
 </head>
 <body>
-  <h1>報胚訊息產生器</h1>
-  <label for="type">回報類型</label>
+  <h1>📜報胚訊息產生器</h1>
+  <label for="type">🧫回報類型</label>
   <select id="type">
-    <option>D1（D5~D7 冷凍）</option>
-    <option>D1（D5~D7 切片＋冷凍）</option>
-    <option>D1（D5 植入）</option>
-    <option>D3 冷凍（無觀察中）</option>
-    <option>D5 冷凍（有觀察中）</option>
-    <option>D5 冷凍（無觀察中）</option>
-    <option>D5 切片＋冷凍（有觀察中）</option>
-    <option>D5 切片＋冷凍（無觀察中）</option>
-    <option>D5 冷凍含部分切片（有觀察中）</option>
-    <option>D5 冷凍含部分切片（無觀察中）</option>
+    <option>1️⃣D1（D5~D7 冷凍）</option>
+    <option>1️⃣D1（D5~D7 切片＋冷凍）</option>
+    <option>1️⃣D1（D5 植入）</option>
+    <option>3️⃣D3 冷凍（無觀察中）</option>
+    <option>5️⃣D5 冷凍（有觀察中）</option>
+    <option>5️⃣D5 冷凍（無觀察中）</option>
+    <option>5️⃣D5 切片＋冷凍（有觀察中）</option>
+    <option>5️⃣D5 切片＋冷凍（無觀察中）</option>
+    <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
+    <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
   </select>
-  <label for="name">姓名</label>
+  <label for="name">🆔姓名</label>
   <input type="text" id="name" />
-  <label for="date">操作日</label>
+  <label for="date">📆今日日期</label>
   <input type="date" id="date" />
-  <label for="stage">今天是</label>
+  <label for="stage">📍今天是</label>
   <select id="stage">
-    <option value="3">D3</option>
-    <option value="5" selected>D5</option>
-    <option value="6">D6</option>
-    <option value="7">D7</option>
+    <option value="3">3️⃣D3</option>
+    <option value="5" selected>5️⃣D5</option>
+    <option value="6">6️⃣D6</option>
+    <option value="7">7️⃣D7</option>
   </select>
-  <label for="num1">成功受精／冷凍顆數（依類型而定）</label>
+  <label for="num1">☃️成功受精顆數 或 冷凍顆數（依類型而定）</label>
   <input type="number" id="num1" />
-  <label for="num2">切片顆數（僅冷凍含部分切片用）</label>
+  <label for="num2">🧬切片顆數（僅冷凍含部分切片用）</label>
   <input type="number" id="num2" />
   <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-    <button onclick="generateMessage()">產生訊息</button>
-    <button onclick="copyOutput()">複製訊息</button>
+    <button onclick="generateMessage()">⚙️產生訊息</button>
+    <button onclick="copyOutput()">✅複製訊息</button>
   </div>
   <div id="output"></div>
   <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
