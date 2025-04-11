@@ -76,7 +76,7 @@
   <input type="text" id="name" />
   <label for="date">操作日</label>
   <input type="date" id="date" />
-  <label for="stage">培養日（D幾）</label>
+  <label for="stage">今天是</label>
   <select id="stage">
     <option value="3">D3</option>
     <option value="5" selected>D5</option>
@@ -85,7 +85,7 @@
   </select>
   <label for="num1">成功受精／冷凍顆數（依類型而定）</label>
   <input type="number" id="num1" />
-  <label for="num2">切片顆數（若有）</label>
+  <label for="num2">切片顆數（僅冷凍含部分切片用）</label>
   <input type="number" id="num2" />
   <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
     <button onclick="generateMessage()">產生訊息</button>
@@ -164,7 +164,7 @@
       hidden.select();
       document.execCommand("copy");
       hidden.blur();
-      alert('已複製！');
+      alert('訊息內容已複製，可以到官方Line使用嘍');
     }
 
     function clearHistory() {
