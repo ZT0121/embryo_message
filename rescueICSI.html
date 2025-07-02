@@ -203,7 +203,8 @@
       const historyList = document.getElementById('historyList');
       const li = document.createElement('li');
       const pre = document.createElement('pre');
-      pre.innerText = msg;
+      pre.innerHTML = msg.replace(/\n/g, "<br>");
+
 
       const copyBtn = document.createElement('button');
       copyBtn.textContent = '複製';
