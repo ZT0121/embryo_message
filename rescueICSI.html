@@ -6,6 +6,9 @@
   <title>補救受精回報產生器</title>
   <link rel="icon" href="message-favicon.png" />
   <style>
+    html {
+      font-size: 16px;
+    }
     body {
       font-family: "Noto Sans TC", sans-serif;
       background-color: #fdfaf6;
@@ -13,11 +16,13 @@
       padding: 20px;
       max-width: 600px;
       margin: auto;
+      font-size: 1rem;
     }
     h1 {
       text-align: center;
       margin-bottom: 0.5em;
       color: #5e473a;
+      font-size: 1.5rem;
     }
     .nav {
       text-align: center;
@@ -26,13 +31,13 @@
     .nav a {
       display: inline-block;
       margin: 0 10px;
-      padding: 10px 16px;
+      padding: 0.6em 1em;
       background-color: #f3d7c3;
       color: #5e473a;
       border-radius: 10px;
       text-decoration: none;
       font-weight: bold;
-      font-size: 0.95em;
+      font-size: 1rem;
       transition: background-color 0.3s;
     }
     .nav a:hover {
@@ -42,39 +47,41 @@
       display: block;
       margin-top: 1em;
       margin-bottom: 0.3em;
+      font-size: 1rem;
     }
     input {
       width: 100%;
-      padding: 8px;
-      font-size: 1em;
+      padding: 0.5em;
+      font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
     button {
       display: block;
       margin: 2em auto 1em;
-      padding: 10px 20px;
+      padding: 0.6em 1.2em;
       background-color: #d8bfae;
       color: #333;
-      font-size: 1em;
+      font-size: 1rem;
       border: none;
       border-radius: 8px;
       cursor: pointer;
     }
     #output {
       background-color: #fff;
-      padding: 15px;
+      padding: 1em;
       border-radius: 8px;
       border: 1px solid #ccc;
       white-space: pre-line;
+      font-size: 1rem;
     }
     #copyBtn {
       display: none;
       margin: 1em auto;
-      padding: 8px 16px;
+      padding: 0.5em 1em;
       background-color: #b89f90;
       color: #fff;
-      font-size: 0.95em;
+      font-size: 1rem;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -82,18 +89,19 @@
   </style>
 </head>
 <body>
-  <h1>補救受精回報</h1>
+  <h1>補救受精回報產生器</h1>
   <div class="nav">
     <a href="index.html">🔙 回主頁</a>
+    <a href="rescueICSI.html">🧬 補救受精頁面</a>
   </div>
 
   <label for="name">🆔姓名</label>
-  <input type="text" id="name" placeholder="宜靜" />
+  <input type="text" id="name" placeholder="請輸入稱呼，如庭甄" />
 
   <label for="rescued">補救受精成功顆數：</label>
   <input type="number" id="rescued" min="0" />
 
-  <label for="normal">D1正常受精顆數：</label>
+  <label for="normal">D1 正常受精顆數：</label>
   <input type="number" id="normal" min="0" />
 
   <button onclick="generateMessage()">產生訊息</button>
@@ -124,7 +132,7 @@
       today.setDate(today.getDate() + 6); // 查詢日為今日 + 6 天
       const queryDate = formatDate(today);
 
-      const message = `${name} 您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同標準受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
+      const message = `${name} 您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
 
       document.getElementById("output").textContent = message;
       document.getElementById("copyBtn").style.display = "block";
