@@ -16,8 +16,27 @@
     }
     h1 {
       text-align: center;
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
       color: #5e473a;
+    }
+    .nav {
+      text-align: center;
+      margin-bottom: 1.5em;
+    }
+    .nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 16px;
+      background-color: #f3d7c3;
+      color: #5e473a;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95em;
+      transition: background-color 0.3s;
+    }
+    .nav a:hover {
+      background-color: #e5c0a8;
     }
     label {
       display: block;
@@ -63,19 +82,19 @@
   </style>
 </head>
 <body>
-   <div class="nav">
+  <h1>補救受精回報</h1>
+  <div class="nav">
     <a href="index.html">🔙 回主頁</a>
     <a href="rescueICSI.html">🧬 補救受精頁面</a>
   </div>
-  <h1>補救受精回報產生器</h1>
 
   <label for="name">🆔姓名</label>
-  <input type="text" id="name" placeholder="宜靜" />
+  <input type="text" id="name" placeholder="請輸入稱呼，如庭甄" />
 
-  <label for="rescued">補救受精成功顆數</label>
+  <label for="rescued">補救受精成功顆數：</label>
   <input type="number" id="rescued" min="0" />
 
-  <label for="normal">昨日正常受精顆數</label>
+  <label for="normal">D1正常受精顆數：</label>
   <input type="number" id="normal" min="0" />
 
   <button onclick="generateMessage()">產生訊息</button>
@@ -106,7 +125,7 @@
       today.setDate(today.getDate() + 6); // 查詢日為今日 + 6 天
       const queryDate = formatDate(today);
 
-      const message = `${name}您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
+      const message = `${name} 您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同標準受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
 
       document.getElementById("output").textContent = message;
       document.getElementById("copyBtn").style.display = "block";
