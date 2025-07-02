@@ -174,7 +174,7 @@
       today.setDate(today.getDate() + 6);
       const queryDate = formatDate(today);
 
-      const message = `${name} 您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
+      const message = `${name} 您好，實驗室通知您，\n🧪昨日補救受精的卵子有 ${rescued} 顆成功受精，\n🧫連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n\n📱最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
 
       document.getElementById("output").textContent = message;
       document.getElementById("copyBtn").style.display = "block";
