@@ -55,6 +55,25 @@
       border-radius: 1rem;
       white-space: pre-wrap;
     }
+    #historyList li {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: #fff8f0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    #historyList button {
+      align-self: flex-end;
+      background-color: #d8c3a5;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -125,6 +144,7 @@
   <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
   <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #e4d1bd; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; width: 100%;">清除歷史紀錄</button>
 </div>
+
 <script>
   window.addEventListener('load', () => {
     const today = new Date();
@@ -147,14 +167,13 @@
   function queryDateByStage(date, stage) {
     const d = new Date(date);
     const stageDay = parseInt(stage);
-    const daysToD8 = 8 - stageDay;
-    d.setDate(d.getDate() + daysToD8);
+    d.setDate(d.getDate() + (8 - stageDay));
     return `${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
   }
 
   function generateMessage() {
     const type = document.getElementById('type').value;
-    const name = document.getElementById('name').value.trim();
+    const name = document.getElementById('name').value.trim() || 'OO';
     const date = document.getElementById('date').value;
     const num1 = document.getElementById('num1').value;
     const num2 = document.getElementById('num2').value;
@@ -210,23 +229,11 @@
   function addToHistory(msg, fromLoad = false) {
     const historyList = document.getElementById('historyList');
     const li = document.createElement('li');
-    li.style.border = '1px solid #ccc';
-    li.style.padding = '0.5rem';
-    li.style.borderRadius = '0.5rem';
-    li.style.backgroundColor = '#fff8f0';
-    li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
-
     const pre = document.createElement('pre');
     pre.innerText = msg;
 
     const copyBtn = document.createElement('button');
     copyBtn.textContent = '複製';
-    copyBtn.style.marginTop = '0.5rem';
-    copyBtn.style.backgroundColor = '#d8c3a5';
-    copyBtn.style.border = 'none';
-    copyBtn.style.padding = '0.3rem 0.8rem';
-    copyBtn.style.borderRadius = '0.4rem';
-    copyBtn.style.cursor = 'pointer';
     copyBtn.onclick = () => {
       const hidden = document.getElementById('hiddenCopy');
       hidden.value = msg;
