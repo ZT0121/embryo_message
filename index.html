@@ -75,62 +75,135 @@
   </a>
 </div>
 
+<label for="type">🧫回報類型</label>
+<select id="type">
+  <option>1️⃣D1（D5~D7 冷凍）</option>
+  <option>1️⃣D1（D5~D7 切片＋冷凍）</option>
+  <option>1️⃣D1（D5 植入）</option>
+  <option>3️⃣D3 冷凍（無觀察中）</option>
+  <option>5️⃣D5 冷凍（有觀察中）</option>
+  <option>5️⃣D5 冷凍（無觀察中）</option>
+  <option>5️⃣D5 冷凍（全部仍在觀察中）</option>
+  <option>5️⃣D5 切片＋冷凍（有觀察中）</option>
+  <option>5️⃣D5 切片＋冷凍（無觀察中）</option>
+  <option>5️⃣D5 切片＋冷凍（全部仍在觀察中）</option>
+  <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
+  <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
+</select>
 
+<label for="name">🆔姓名</label>
+<input type="text" id="name" />
 
-  <label for="type">🧫回報類型</label>
-  <select id="type">
-    <option>1️⃣D1（D5~D7 冷凍）</option>
-    <option>1️⃣D1（D5~D7 切片＋冷凍）</option>
-    <option>1️⃣D1（D5 植入）</option>
-    <option>3️⃣D3 冷凍（無觀察中）</option>
-    <option>5️⃣D5 冷凍（有觀察中）</option>
-    <option>5️⃣D5 冷凍（無觀察中）</option>
-    <option>5️⃣D5 冷凍（全部仍在觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（有觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（無觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（全部仍在觀察中）</option>
-    <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
-    <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
-  </select>
-  <label for="name">🆔姓名</label>
-  <input type="text" id="name" />
-  <label for="date">📆今日日期</label>
-  <input type="date" id="date" />
-  <label for="stage">📍今天是</label>
-  <select id="stage">
-    <option value="1">1️⃣D1</option>
-    <option value="3">3️⃣D3</option>
-    <option value="5" selected>5️⃣D5</option>
-    <option value="6">6️⃣D6</option>
-    <option value="7">7️⃣D7</option>
-  </select>
-  <label for="num1">☃️成功受精顆數 或 冷凍顆數（依類型而定）</label>
-  <input type="number" id="num1" />
-  <label for="num2">🧬切片顆數（僅冷凍含部分切片用）</label>
-  <input type="number" id="num2" />
-  <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-    <button onclick="generateMessage()">⚙️產生訊息</button>
-    <button onclick="copyOutput()">✅複製訊息</button>
-  </div>
-  <div id="output"></div>
-  <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
-  <div id="history" style="margin-top:2rem; background-color: #f5eee6; padding: 1rem; border-radius: 1rem; border: 1px solid #e0d6cd;">
-    <h2 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">歷史紀錄</h2>
-    <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
-    <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #e4d1bd; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; width: 100%;">清除歷史紀錄</button>
-  </div>
-  <script>
-    window.addEventListener('load', () => {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      const dateInput = document.getElementById('date');
-      if (dateInput && !dateInput.value) {
-        dateInput.value = `${yyyy}-${mm}-${dd}`;
-      }
-      loadHistory();
-    });
+<label for="date">📆今日日期</label>
+<input type="date" id="date" />
+
+<label for="stage">📍今天是</label>
+<select id="stage">
+  <option value="1">1️⃣D1</option>
+  <option value="3">3️⃣D3</option>
+  <option value="5" selected>5️⃣D5</option>
+  <option value="6">6️⃣D6</option>
+  <option value="7">7️⃣D7</option>
+</select>
+
+<label for="num1">☃️成功受精顆數 或 冷凍顆數（依類型而定）</label>
+<input type="number" id="num1" />
+
+<label for="num2">🧬切片顆數（僅冷凍含部分切片用）</label>
+<input type="number" id="num2" />
+
+<div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+  <button onclick="generateMessage()">⚙️產生訊息</button>
+  <button onclick="copyOutput()">✅複製訊息</button>
+</div>
+
+<div id="output"></div>
+<textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
+
+<div id="history" style="margin-top:2rem; background-color: #f5eee6; padding: 1rem; border-radius: 1rem; border: 1px solid #e0d6cd;">
+  <h2 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">歷史紀錄</h2>
+  <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
+  <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #e4d1bd; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; width: 100%;">清除歷史紀錄</button>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateInput = document.getElementById('date');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+    loadHistory();
+  });
+
+  function copyOutput() {
+    const text = document.getElementById('output').textContent;
+    const hidden = document.getElementById('hiddenCopy');
+    hidden.value = text;
+    hidden.select();
+    document.execCommand("copy");
+    hidden.blur();
+    alert('訊息內容已複製，可以到官方Line使用嘍');
+  }
+
+  function clearHistory() {
+    document.getElementById('historyList').innerHTML = '';
+    localStorage.removeItem('messageHistory');
+  }
+
+  function addToHistory(msg, fromLoad = false) {
+    const historyList = document.getElementById('historyList');
+    const li = document.createElement('li');
+    li.style.border = '1px solid #ccc';
+    li.style.padding = '0.5rem';
+    li.style.borderRadius = '0.5rem';
+    li.style.backgroundColor = '#fff8f0';
+    li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+
+    const pre = document.createElement('pre');
+    pre.innerText = msg;
+
+    const copyBtn = document.createElement('button');
+    copyBtn.textContent = '複製';
+    copyBtn.style.marginTop = '0.5rem';
+    copyBtn.style.backgroundColor = '#d8c3a5';
+    copyBtn.style.border = 'none';
+    copyBtn.style.padding = '0.3rem 0.8rem';
+    copyBtn.style.borderRadius = '0.4rem';
+    copyBtn.style.cursor = 'pointer';
+    copyBtn.onclick = () => {
+      const hidden = document.getElementById('hiddenCopy');
+      hidden.value = msg;
+      hidden.select();
+      document.execCommand("copy");
+      hidden.blur();
+      alert("已複製！");
+    };
+
+    li.appendChild(pre);
+    li.appendChild(copyBtn);
+    historyList.prepend(li);
+
+    if (!fromLoad) {
+      saveHistory();
+    }
+  }
+
+  function saveHistory() {
+    const items = [...document.querySelectorAll('#historyList pre')].map(pre => pre.textContent);
+    localStorage.setItem('messageHistory', JSON.stringify(items.reverse()));
+  }
+
+  function loadHistory() {
+    const data = localStorage.getItem('messageHistory');
+    if (data) {
+      const messages = JSON.parse(data);
+      messages.forEach(msg => addToHistory(msg, true));
+    }
+  }
 
     function generateMessage() {
       const type = document.getElementById('type').value;
