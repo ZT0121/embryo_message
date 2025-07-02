@@ -74,7 +74,7 @@
       padding: 1em;
       border-radius: 8px;
       border: 1px solid #ccc;
-      white-space: pre-line;
+      white-space: pre-wrap;
       font-size: 1rem;
     }
     #history {
@@ -103,12 +103,12 @@
       background-color: #fff8f0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-     #historyList li pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: inherit;
-    font-size: 1rem;
-  }
+    #historyList li pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: inherit;
+      font-size: 1rem;
+    }
     #historyList button {
       margin-top: 0.5rem;
       background-color: #d8c3a5;
@@ -133,7 +133,7 @@
 <body>
   <h1>補救受精回報</h1>
   <div class="nav">
-    <a href="index.html">🔙 回主頁</a>
+    <a href="index.html">🔙 回報胚</a>
   </div>
 
   <label for="name">🆔姓名</label>
@@ -203,8 +203,7 @@
       const historyList = document.getElementById('historyList');
       const li = document.createElement('li');
       const pre = document.createElement('pre');
-      pre.innerHTML = msg.replace(/\n/g, "<br>");
-
+      pre.textContent = msg;
 
       const copyBtn = document.createElement('button');
       copyBtn.textContent = '複製';
