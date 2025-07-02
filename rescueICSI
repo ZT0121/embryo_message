@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>補救受精回報產生器</title>
+  <link rel="icon" href="message-favicon.png" />
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #fdfaf6;
+      color: #333;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #5e473a;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      margin-bottom: 0.3em;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      display: block;
+      margin: 2em auto 1em;
+      padding: 10px 20px;
+      background-color: #d8bfae;
+      color: #333;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #output {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      white-space: pre-line;
+    }
+    #copyBtn {
+      display: none;
+      margin: 1em auto;
+      padding: 8px 16px;
+      background-color: #b89f90;
+      color: #fff;
+      font-size: 0.95em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>補救受精回報產生器</h1>
+
+  <label for="name">🆔姓名</label>
+  <input type="text" id="name" placeholder="請輸入稱呼，如庭甄" />
+
+  <label for="rescued">補救受精成功顆數</label>
+  <input type="number" id="rescued" min="0" />
+
+  <label for="normal">昨日正常受精顆數</label>
+  <input type="number" id="normal" min="0" />
+
+  <button onclick="generateMessage()">產生訊息</button>
+  <button id="copyBtn" onclick="copyMessage()">複製訊息</button>
+
+  <div id="output"></div>
+
+  <script>
+    function formatDate(date) {
+      const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+      const dd = date.getDate().toString().padStart(2, '0');
+      return `${mm}/${dd}`;
+    }
+
+    function generateMessage() {
+      const name = document.getElementById("name").value.trim() || "ooo";
+      const rescued = parseInt(document.getElementById("rescued").value);
+      const normal = parseInt(document.getElementById("normal").value);
+
+      if (isNaN(rescued) || isNaN(normal)) {
+        alert("請完整填寫所有欄位。");
+        return;
+      }
+
+      const total = rescued + normal;
+
+      const today = new Date();
+      today.setDate(today.getDate() + 6); // 查詢日為今日 + 6 天
+      const queryDate = formatDate(today);
+
+      const message = `${name}您好，\n通知您，昨日補救受精的卵子有 ${rescued} 顆成功受精，\n連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
+
+      document.getElementById("output").textContent = message;
+      document.getElementById("copyBtn").style.display = "block";
+    }
+
+    function copyMessage() {
+      const output = document.getElementById("output").textContent;
+      navigator.clipboard.writeText(output).then(() => {
+        alert("訊息已複製！");
+      });
+    }
+  </script>
+</body>
+</html>
