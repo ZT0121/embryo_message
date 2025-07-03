@@ -208,9 +208,10 @@ function addToHistory(msg, fromLoad = false) {
   li.style.backgroundColor = '#fff8f0';
   li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
 
-  const div = document.createElement('div');
-  div.className = 'history-message';
-  div.innerText = msg;
+const messageDiv = document.createElement('div');
+messageDiv.className = 'history-message';
+messageDiv.textContent = msg;
+
 
   const copyBtn = document.createElement('button');
   copyBtn.textContent = '複製';
