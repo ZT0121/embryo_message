@@ -38,8 +38,8 @@
 <body>
   <h1>凍精訊息產生器</h1>
 
-  <label>病歷號：<input type="text" id="caseId" placeholder="例：12345"></label>
-  <label>姓名：<input type="text" id="caseName" placeholder="例：大雄"></label>
+  <label>病歷號：<input type="text" id="caseId" placeholder="例：0012345"></label>
+  <label>姓名：<input type="text" id="caseName" placeholder="例：OOO"></label>
 
   <label for="doctor">選擇醫師：</label>
   <select id="doctor">
@@ -61,8 +61,9 @@
   <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none;">
 
   <label>Volume (ml)：<input type="number" id="volume" step="0.1"></label>
-  <label>Concentration (M/ml)：<input type="number" id="conc"></label>
+  <label>Concentration (M)：<input type="number" id="conc"></label>
   <label>Grade3+2 (%)：<input type="number" id="grade32"></label>
+  <label>冷凍管數：<input type="number" id="tubes"></label>
 
   <button onclick="generateDoctor()">產生醫師訊息</button>
   <button onclick="generatePatient()">產生個案訊息</button>
@@ -86,10 +87,11 @@
       let volume = parseFloat(document.getElementById("volume").value);
       let conc = parseFloat(document.getElementById("conc").value);
       let grade32 = parseFloat(document.getElementById("grade32").value);
+      let tubes = document.getElementById("tubes").value.trim();
 
       let abnormalities = [];
       if (volume < 1) abnormalities.push(`Volume: ${volume} ml`);
-      if (conc < 15) abnormalities.push(`Concentration: ${conc} M/ml`);
+      if (conc < 15) abnormalities.push(`Concentration: ${conc} M`);
       if (grade32 < 30) abnormalities.push(`Grade3+2: ${grade32}%`);
 
       if (abnormalities.length === 0) {
@@ -102,7 +104,8 @@
 今日凍精個案 #${caseId} ${caseName}
 檢體分析：
 ${abnormalities.join("\n")}
-由於個案無法留在現場等候，實驗室建議可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。`;
+由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，
+建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。`;
 
       document.getElementById("output").innerText = message;
     }
@@ -113,6 +116,7 @@ ${abnormalities.join("\n")}
       let volume = parseFloat(document.getElementById("volume").value);
       let conc = parseFloat(document.getElementById("conc").value);
       let grade32 = parseFloat(document.getElementById("grade32").value);
+      let tubes = document.getElementById("tubes").value.trim();
 
       let abnormalities = [];
       if (volume < 1) abnormalities.push("體積不足");
@@ -127,7 +131,8 @@ ${abnormalities.join("\n")}
       let message = `${caseName}您好，
 
 今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。
-我們已完成冷凍保存，建議您可擇日再行凍精，或者於受精療程當天提供新鮮精液。`;
+我們已將此次精蟲冷凍 ${tubes} 管，建議您可擇日再行凍精，
+或者於受精療程當天提供新鮮精液。`;
 
       document.getElementById("output").innerText = message;
     }
