@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>凍精訊息產生器</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background-color: #fdfaf7;
+      color: #4b3b30;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    h1 { text-align: center; margin-bottom: 1.5rem; }
+    label { display:block; margin-top:1rem; font-weight:bold; }
+    input, select {
+      width:100%; padding:0.4rem; margin-top:0.3rem;
+      border-radius:0.4rem; border:1px solid #ccc;
+      font-size:14px;
+    }
+    button {
+      display:block; margin:1.5rem auto; padding:0.6rem 1.2rem;
+      border:none; border-radius:0.5rem;
+      background:#d8c3a5; color:#fff; font-size:14px;
+      cursor:pointer;
+    }
+    #output {
+      margin-top:1.5rem; padding:1rem;
+      border:1px solid #ddd; border-radius:0.4rem;
+      background:#fff;
+      white-space:pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1>凍精訊息產生器</h1>
+
+  <label for="doctor">選擇醫師：</label>
+  <select id="doctor">
+    <option value="">--請選擇--</option>
+    <option value="陳院">陳院</option>
+    <option value="廖院">廖院</option>
+    <option value="詹醫師">詹醫師</option>
+    <option value="沈醫師">沈醫師</option>
+    <option value="張醫師">張醫師</option>
+    <option value="劉醫師">劉醫師</option>
+    <option value="朱院">朱院</option>
+    <option value="王院">王院</option>
+    <option value="林醫師">林醫師</option>
+    <option value="李醫師">李醫師</option>
+    <option value="何醫師">何醫師</option>
+    <option value="洪醫師">洪醫師</option>
+    <option value="自填">其他（自填）</option>
+  </select>
+  <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none;">
+
+  <label>Volume (ml)：<input type="number" id="volume" step="0.1"></label>
+  <label>Concentration (M/ml)：<input type="number" id="conc"></label>
+  <label>Motility (%)：<input type="number" id="motility"></label>
+  <label>PR (%)：<input type="number" id="pr"></label>
+  <label>TMSC (M)：<input type="number" id="tmsc"></label>
+
+  <button onclick="generate()">產生訊息</button>
+
+  <div id="output"></div>
+
+  <script>
+    document.getElementById("doctor").addEventListener("change", function() {
+      let custom = document.getElementById("doctorCustom");
+      custom.style.display = (this.value === "自填") ? "block" : "none";
+    });
+
+    function generate() {
+      let doctor = document.getElementById("doctor").value;
+      if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
+
+      let volume = parseFloat(document.getElementById("volume").value);
+      let conc = parseFloat(document.getElementById("conc").value);
+      let motility = parseFloat(document.getElementById("motility").value);
+      let pr = parseFloat(document.getElementById("pr").value);
+      let tmsc = parseFloat(document.getElementById("tmsc").value);
+
+      const thresholds = { volume: 1.5, conc: 15, motility: 40, pr: 32, tmsc: 15 };
+      let abnormalities = [];
+
+      if (volume < thresholds.volume) abnormalities.push("體積偏低");
+      if (conc < thresholds.conc) abnormalities.push("濃度偏低");
+      if (motility < thresholds.motility) abnormalities.push("活動率偏低");
+      if (pr < thresholds.pr) abnormalities.push("PR 偏低");
+      if (tmsc < thresholds.tmsc) abnormalities.push("總活動精數不足");
+
+      let abnormalText = abnormalities.length > 0 
+        ? "，異常項目：" + abnormalities.join("、") 
+        : "，各項數值在常規範圍內";
+
+      let message = `${doctor}您好，個案今日凍精檢體分析：
+Volume: ${volume} ml
+Concentration: ${conc} M/ml
+Motility: ${motility}%
+PR: ${pr}%
+TMSC: ${tmsc} M
+${abnormalText}。`;
+
+      document.getElementById("output").innerText = message;
+    }
+  </script>
+</body>
+</html>
