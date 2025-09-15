@@ -64,7 +64,8 @@
   <label>Concentration (M/ml)：<input type="number" id="conc"></label>
   <label>Grade3+2 (%)：<input type="number" id="grade32"></label>
 
-  <button onclick="generate()">產生訊息</button>
+  <button onclick="generateDoctor()">產生醫師訊息</button>
+  <button onclick="generatePatient()">產生個案訊息</button>
   <button onclick="copyMessage()">複製訊息</button>
 
   <div id="output"></div>
@@ -75,7 +76,7 @@
       custom.style.display = (this.value === "自填") ? "block" : "none";
     });
 
-    function generate() {
+    function generateDoctor() {
       let caseId = document.getElementById("caseId").value.trim();
       let caseName = document.getElementById("caseName").value.trim();
 
@@ -87,35 +88,54 @@
       let grade32 = parseFloat(document.getElementById("grade32").value);
 
       let abnormalities = [];
-      if (volume < 1) abnormalities.push("體積 < 1 ml");
-      if (conc < 15) abnormalities.push("濃度 < 15 M/ml");
-      if (grade32 < 30) abnormalities.push("Grade3+2 < 30%");
+      if (volume < 1) abnormalities.push(`Volume: ${volume} ml`);
+      if (conc < 15) abnormalities.push(`Concentration: ${conc} M/ml`);
+      if (grade32 < 30) abnormalities.push(`Grade3+2: ${grade32}%`);
 
-      let abnormalText = abnormalities.length > 0 
-        ? abnormalities.join("、") + "。" 
-        : "主要數值在常規範圍內。";
-
-      let suggestion = abnormalities.length > 0 
-        ? "由於個案無法留在現場等候，實驗室建議可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。" 
-        : "";
+      if (abnormalities.length === 0) {
+        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
+        return;
+      }
 
       let message = `${doctor}您好，
 
 今日凍精個案 #${caseId} ${caseName}
 檢體分析：
-Volume: ${volume} ml
-Concentration: ${conc} M/ml
-Grade3+2: ${grade32}%
-${abnormalText}
-${suggestion}`;
+${abnormalities.join("\n")}
+由於個案無法留在現場等候，實驗室建議可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。`;
+
+      document.getElementById("output").innerText = message;
+    }
+
+    function generatePatient() {
+      let caseName = document.getElementById("caseName").value.trim();
+
+      let volume = parseFloat(document.getElementById("volume").value);
+      let conc = parseFloat(document.getElementById("conc").value);
+      let grade32 = parseFloat(document.getElementById("grade32").value);
+
+      let abnormalities = [];
+      if (volume < 1) abnormalities.push("體積不足");
+      if (conc < 15) abnormalities.push("濃度偏低");
+      if (grade32 < 30) abnormalities.push("活動力不足");
+
+      if (abnormalities.length === 0) {
+        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
+        return;
+      }
+
+      let message = `${caseName}您好，
+
+今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。
+我們已完成冷凍保存，建議您可擇日再行凍精，或者於受精療程當天提供新鮮精液。`;
 
       document.getElementById("output").innerText = message;
     }
 
     function copyMessage() {
       let text = document.getElementById("output").innerText;
-      if (!text) {
-        alert("請先產生訊息");
+      if (!text || text.includes("不需傳訊息")) {
+        alert("目前沒有需要複製的訊息");
         return;
       }
       navigator.clipboard.writeText(text).then(() => {
@@ -125,4 +145,3 @@ ${suggestion}`;
   </script>
 </body>
 </html>
-
