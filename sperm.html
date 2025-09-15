@@ -21,7 +21,8 @@
       font-size:14px;
     }
     button {
-      display:block; margin:1.5rem auto; padding:0.6rem 1.2rem;
+      display:inline-block; margin:1.5rem 0.5rem 0 0;
+      padding:0.6rem 1.2rem;
       border:none; border-radius:0.5rem;
       background:#d8c3a5; color:#fff; font-size:14px;
       cursor:pointer;
@@ -37,8 +38,8 @@
 <body>
   <h1>凍精訊息產生器</h1>
 
-  <label>病歷號：<input type="text" id="caseId" placeholder="例：12345"></label>
-  <label>姓名：<input type="text" id="caseName" placeholder="例：大雄"></label>
+  <label>病歷號：<input type="text" id="caseId" placeholder="例：0012345"></label>
+  <label>姓名：<input type="text" id="caseName" placeholder="例：OOO"></label>
 
   <label for="doctor">選擇醫師：</label>
   <select id="doctor">
@@ -64,6 +65,7 @@
   <label>Grade3+2 (%)：<input type="number" id="grade32"></label>
 
   <button onclick="generate()">產生訊息</button>
+  <button onclick="copyMessage()">複製訊息</button>
 
   <div id="output"></div>
 
@@ -90,19 +92,37 @@
       if (grade32 < 30) abnormalities.push("Grade3+2 < 30%");
 
       let abnormalText = abnormalities.length > 0 
-        ? "，異常項目：" + abnormalities.join("、") 
-        : "，主要數值在常規範圍內";
+        ? abnormalities.join("、") + "。" 
+        : "主要數值在常規範圍內。";
 
-      let message = `今日凍精個案 #${caseId} ${caseName}
+      let suggestion = abnormalities.length > 0 
+        ? "由於個案無法留在現場等候，實驗室建議可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。" 
+        : "";
 
-${doctor}您好，檢體分析：
+      let message = `${doctor}您好，
+
+今日凍精個案 #${caseId} ${caseName}
+檢體分析：
 Volume: ${volume} ml
 Concentration: ${conc} M/ml
 Grade3+2: ${grade32}%
-${abnormalText}。`;
+${abnormalText}
+${suggestion}`;
 
       document.getElementById("output").innerText = message;
+    }
+
+    function copyMessage() {
+      let text = document.getElementById("output").innerText;
+      if (!text) {
+        alert("請先產生訊息");
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        alert("訊息已複製");
+      });
     }
   </script>
 </body>
 </html>
+
