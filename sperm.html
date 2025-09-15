@@ -37,6 +37,9 @@
 <body>
   <h1>凍精訊息產生器</h1>
 
+  <label>病歷號：<input type="text" id="caseId" placeholder="例：0012345"></label>
+  <label>姓名：<input type="text" id="caseName" placeholder="例：OOO"></label>
+
   <label for="doctor">選擇醫師：</label>
   <select id="doctor">
     <option value="">--請選擇--</option>
@@ -71,6 +74,9 @@
     });
 
     function generate() {
+      let caseId = document.getElementById("caseId").value.trim();
+      let caseName = document.getElementById("caseName").value.trim();
+
       let doctor = document.getElementById("doctor").value;
       if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
 
@@ -79,7 +85,6 @@
       let grade32 = parseFloat(document.getElementById("grade32").value);
 
       let abnormalities = [];
-
       if (volume < 1) abnormalities.push("體積 < 1 ml");
       if (conc < 15) abnormalities.push("濃度 < 15 M/ml");
       if (grade32 < 30) abnormalities.push("Grade3+2 < 30%");
@@ -88,7 +93,9 @@
         ? "，異常項目：" + abnormalities.join("、") 
         : "，主要數值在常規範圍內";
 
-      let message = `${doctor}您好，個案今日凍精檢體分析：
+      let message = `今日凍精個案 #${caseId} ${caseName}
+
+${doctor}您好，檢體分析：
 Volume: ${volume} ml
 Concentration: ${conc} M/ml
 Grade3+2: ${grade32}%
