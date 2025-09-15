@@ -62,7 +62,7 @@
 
   <label>Volume (ml)：<input type="number" id="volume" step="0.1"></label>
   <label>Concentration (M)：<input type="number" id="conc"></label>
-  <label>Grade3+2 (%)：<input type="number" id="grade32"></label>
+  <label>PR (%)：<input type="number" id="PR"></label>
   <label>冷凍管數：<input type="number" id="tubes"></label>
 
   <button onclick="generateDoctor()">產生醫師訊息</button>
@@ -86,13 +86,13 @@
 
       let volume = parseFloat(document.getElementById("volume").value);
       let conc = parseFloat(document.getElementById("conc").value);
-      let grade32 = parseFloat(document.getElementById("grade32").value);
+      let PR = parseFloat(document.getElementById("PR").value);
       let tubes = document.getElementById("tubes").value.trim();
 
       let abnormalities = [];
       if (volume < 1) abnormalities.push(`Volume: ${volume} ml`);
       if (conc < 15) abnormalities.push(`Concentration: ${conc} M`);
-      if (grade32 < 30) abnormalities.push(`Grade3+2: ${grade32}%`);
+      if (PR < 30) abnormalities.push(`PR: ${PR}%`);
 
       if (abnormalities.length === 0) {
         document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
@@ -115,13 +115,13 @@ ${abnormalities.join("\n")}
 
       let volume = parseFloat(document.getElementById("volume").value);
       let conc = parseFloat(document.getElementById("conc").value);
-      let grade32 = parseFloat(document.getElementById("grade32").value);
+      let PR = parseFloat(document.getElementById("PR").value);
       let tubes = document.getElementById("tubes").value.trim();
 
       let abnormalities = [];
       if (volume < 1) abnormalities.push("體積不足");
       if (conc < 15) abnormalities.push("濃度偏低");
-      if (grade32 < 30) abnormalities.push("活動力不足");
+      if (PR < 30) abnormalities.push("活動力不足");
 
       if (abnormalities.length === 0) {
         document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
