@@ -58,9 +58,7 @@
 
   <label>Volume (ml)：<input type="number" id="volume" step="0.1"></label>
   <label>Concentration (M/ml)：<input type="number" id="conc"></label>
-  <label>Motility (%)：<input type="number" id="motility"></label>
-  <label>PR (%)：<input type="number" id="pr"></label>
-  <label>TMSC (M)：<input type="number" id="tmsc"></label>
+  <label>Grade3+2 (%)：<input type="number" id="grade32"></label>
 
   <button onclick="generate()">產生訊息</button>
 
@@ -78,29 +76,22 @@
 
       let volume = parseFloat(document.getElementById("volume").value);
       let conc = parseFloat(document.getElementById("conc").value);
-      let motility = parseFloat(document.getElementById("motility").value);
-      let pr = parseFloat(document.getElementById("pr").value);
-      let tmsc = parseFloat(document.getElementById("tmsc").value);
+      let grade32 = parseFloat(document.getElementById("grade32").value);
 
-      const thresholds = { volume: 1.5, conc: 15, motility: 40, pr: 32, tmsc: 15 };
       let abnormalities = [];
 
-      if (volume < thresholds.volume) abnormalities.push("體積偏低");
-      if (conc < thresholds.conc) abnormalities.push("濃度偏低");
-      if (motility < thresholds.motility) abnormalities.push("活動率偏低");
-      if (pr < thresholds.pr) abnormalities.push("PR 偏低");
-      if (tmsc < thresholds.tmsc) abnormalities.push("總活動精數不足");
+      if (volume < 1) abnormalities.push("體積 < 1 ml");
+      if (conc < 15) abnormalities.push("濃度 < 15 M/ml");
+      if (grade32 < 30) abnormalities.push("Grade3+2 < 30%");
 
       let abnormalText = abnormalities.length > 0 
         ? "，異常項目：" + abnormalities.join("、") 
-        : "，各項數值在常規範圍內";
+        : "，主要數值在常規範圍內";
 
       let message = `${doctor}您好，個案今日凍精檢體分析：
 Volume: ${volume} ml
 Concentration: ${conc} M/ml
-Motility: ${motility}%
-PR: ${pr}%
-TMSC: ${tmsc} M
+Grade3+2: ${grade32}%
 ${abnormalText}。`;
 
       document.getElementById("output").innerText = message;
