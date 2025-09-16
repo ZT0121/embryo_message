@@ -42,8 +42,8 @@
   <label for="scenario">選擇情境：</label>
   <select id="scenario" onchange="switchScenario()">
     <option value="">--請選擇--</option>
-    <option value="s1">情境 1：個案不在現場等候</option>
-    <option value="s2b">情境 2B：個案在現場，二次檢體仍不佳</option>
+    <option value="s1">個案不在現場等候</option>
+    <option value="s2b">個案在現場，二取仍不佳</option>
   </select>
 
   <label>病歷號：<input type="text" id="caseId" placeholder="例：12345"></label>
@@ -52,7 +52,7 @@
   <label for="doctor">選擇醫師：</label>
   <select id="doctor">
     <option value="">--請選擇--</option>
-    <option value="陳院">陳院</option>
+    <option value="陳醫師">陳醫師</option>
     <option value="廖院">廖院</option>
     <option value="詹醫師">詹醫師</option>
     <option value="沈醫師">沈醫師</option>
@@ -76,8 +76,8 @@
     <label>PR (%)：<input type="number" id="PR1"></label>
     <label>冷凍管數：<input type="number" id="tubes1"></label>
 
-    <button onclick="generateDoctor1()">產生醫師訊息（情境1）</button>
-    <button onclick="generatePatient1()">產生個案訊息（情境1）</button>
+    <button onclick="generateDoctor1()">產生醫師訊息</button>
+    <button onclick="generatePatient1()">產生個案訊息</button>
   </div>
 
   <!-- 情境 2B -->
@@ -94,8 +94,8 @@
 
     <label>冷凍管數：<input type="number" id="tubes2"></label>
 
-    <button onclick="generateDoctor2B()">產生醫師訊息（情境2B）</button>
-    <button onclick="generatePatient2B()">產生個案訊息（情境2B）</button>
+    <button onclick="generateDoctor2B()">產生醫師訊息</button>
+    <button onclick="generatePatient2B()">產生個案訊息</button>
   </div>
 
   <button onclick="copyMessage()">複製訊息</button>
@@ -138,13 +138,13 @@
         return;
       }
 
-      let message = `${doctor}您好，
+      let message = `${doctor}您好，\n
 
 今日凍精個案 #${caseId} ${caseName}
-檢體分析：
+檢體分析：\n
 ${abnormalities.join("\n")}
-由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，
-建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。`;
+由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n
+建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。\n`;
 
       document.getElementById("output").innerText = message;
     }
@@ -166,11 +166,12 @@ ${abnormalities.join("\n")}
         return;
       }
 
-      let message = `${caseName}您好，
+      let message = `${caseName}您好，\n
 
-今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。
-我們已將此次精蟲冷凍 ${tubes} 管，建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。
-此次凍精的檢驗報告已上傳至 APP，您可隨時查詢；若有任何疑問，也建議您回診與醫師諮詢。謝謝您。`;
+今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。\n
+我們已將此次精蟲冷凍 ${tubes} 管，建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。\n
+此次凍精的檢驗報告已上傳至 APP，您可隨時查詢；若有任何疑問，也建議您回診與醫師諮詢。\n
+謝謝您。`;
 
       document.getElementById("output").innerText = message;
     }
@@ -195,17 +196,18 @@ ${abnormalities.join("\n")}
       let message = `${doctor}您好，
 
 今日凍精個案 #${caseId} ${caseName}
-檢體分析：
-第一次：
-  Volume: ${v1} ml
-  Concentration: ${c1} M
-  PR: ${p1}%
-第二次：
-  Volume: ${v2} ml
-  Concentration: ${c2} M
-  PR: ${p2}%
+檢體分析：\n
+第一次：\n
+  Volume: ${v1} ml\n
+  Concentration: ${c1} M\n
+  PR: ${p1}%\n
+第二次：\n
+  Volume: ${v2} ml\n
+  Concentration: ${c2} M\n
+  PR: ${p2}%\n
 
-二次繳交後精蟲狀況仍不佳，實驗室已先將此次精蟲冷凍 ${tubes} 管備用，
+二次繳交後精蟲狀況仍不佳，\n
+實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n
 建議可請個案隔日再次凍精，或於受精療程當天使用新鮮精蟲。`;
 
       document.getElementById("output").innerText = message;
@@ -226,12 +228,13 @@ ${abnormalities.join("\n")}
 
       let abnText = abn.length > 0 ? `（${abn.join("、")}）` : "";
 
-      let message = `${caseName}您好，
+      let message = `${caseName}您好，\n
 
-今日您在本院二次繳交檢體，精蟲狀況仍不理想${abnText}。
-我們已將此次精蟲冷凍 ${tubes} 管備用，
-建議您可於隔日再次凍精，或於受精療程當天提供新鮮精液。
-此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。謝謝您。`;
+今日您於本院繳交 2 次檢體，精蟲狀況仍不理想${abnText}。\n
+我們已將此次精蟲冷凍 ${tubes} 管備用，\n
+建議您可於隔日再次凍精，或於受精療程當天提供新鮮精液。\n
+此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
+謝謝您。`;
 
       document.getElementById("output").innerText = message;
     }
