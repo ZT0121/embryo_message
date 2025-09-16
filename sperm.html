@@ -9,14 +9,38 @@
       font-family: "Noto Sans TC", sans-serif;
       background-color: #fdfaf7;
       color: #4b3b30;
-      max-width: 650px;
+      max-width: 700px;
       margin: 0 auto;
       padding: 1.5rem;
+      font-size: 16px; /* 全域字體大小 */
+      line-height: 1.6;
     }
-    h1 { text-align: center; margin-bottom: 1.5rem; }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.2rem;
+      font-size: 20px;
+    }
+    .nav {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .nav a {
+      display: inline-block;
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: #d8c3a5;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .nav a:hover {
+      background: #b89b7f;
+    }
     label { display:block; margin-top:0.8rem; font-weight:bold; }
     input, select {
-      width:100%; padding:0.4rem; margin-top:0.3rem;
+      width:100%; padding:0.5rem; margin-top:0.3rem;
       border-radius:0.4rem; border:1px solid #ccc;
       font-size:14px;
     }
@@ -26,6 +50,10 @@
       border:none; border-radius:0.5rem;
       background:#d8c3a5; color:#fff; font-size:14px;
       cursor:pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background:#b89b7f;
     }
     #output {
       margin-top:1.5rem; padding:1rem;
@@ -39,7 +67,13 @@
 <body>
   <h1>凍精訊息產生器</h1>
 
-  <label for="scenario">選擇情境：</label>
+  <!-- 導航按鈕 -->
+  <div class="nav">
+    <a href="index.html">返回報胚訊息產生器</a>
+    <a href="sperm.html">凍精訊息產生器</a>
+  </div>
+
+  <label for="scenario">選擇狀況：</label>
   <select id="scenario" onchange="switchScenario()">
     <option value="">--請選擇--</option>
     <option value="s1">個案不在現場等候</option>
@@ -139,43 +173,41 @@
       }
 
       let message = `${doctor}您好，\n
-
-今日凍精個案 #${caseId} ${caseName}
+今日凍精個案 #${caseId} ${caseName}\n
 檢體分析：\n
-${abnormalities.join("\n")}
+${abnormalities.join("\n")}\n
 由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n
-建議個案可以擇日再次安排凍精，或者於受精療程當天使用新鮮精蟲受精。\n`;
+建議個案可以擇日再凍精，或者於受精療程當天使用新鮮精蟲受精。\n`;
 
       document.getElementById("output").innerText = message;
     }
 
-function generatePatient1() {
-  let caseName = document.getElementById("caseName").value.trim();
-  let volume = parseFloat(document.getElementById("volume1").value);
-  let conc = parseFloat(document.getElementById("conc1").value);
-  let PR = parseFloat(document.getElementById("PR1").value);
-  let tubes = document.getElementById("tubes1").value.trim();
+    function generatePatient1() {
+      let caseName = document.getElementById("caseName").value.trim();
+      let volume = parseFloat(document.getElementById("volume1").value);
+      let conc = parseFloat(document.getElementById("conc1").value);
+      let PR = parseFloat(document.getElementById("PR1").value);
+      let tubes = document.getElementById("tubes1").value.trim();
 
-  let abnormalities = [];
-  if (volume < 1) abnormalities.push("體積不足");
-  if (conc < 15) abnormalities.push("濃度偏低");
-  if (PR < 30) abnormalities.push("活動力不足");
+      let abnormalities = [];
+      if (volume < 1) abnormalities.push("體積不足");
+      if (conc < 15) abnormalities.push("濃度偏低");
+      if (PR < 30) abnormalities.push("活動力不足");
 
-  if (abnormalities.length === 0) {
-    document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
-    return;
-  }
+      if (abnormalities.length === 0) {
+        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
+        return;
+      }
 
-  let message = `${caseName}您好，\n
+      let message = `${caseName}您好，\n
 今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。\n
 我們已先將此次精蟲冷凍 ${tubes} 管，\n
-建議您可擇日再次安排凍精，或於受精療程當天提供新鮮精液。\n
+建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。\n
 此次凍精的檢驗報告已上傳至 APP，您可隨時查詢；若有任何疑問，也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
-  document.getElementById("output").innerText = message;
-}
-
+      document.getElementById("output").innerText = message;
+    }
 
     // === 情境 2B ===
     function generateDoctor2B() {
@@ -194,9 +226,8 @@ function generatePatient1() {
 
       let tubes = document.getElementById("tubes2").value.trim();
 
-      let message = `${doctor}您好，
-
-今日凍精個案 #${caseId} ${caseName}
+      let message = `${doctor}您好，\n
+今日凍精個案 #${caseId} ${caseName}\n
 檢體分析：\n
 第一次：\n
   Volume: ${v1} ml\n
@@ -206,37 +237,35 @@ function generatePatient1() {
   Volume: ${v2} ml\n
   Concentration: ${c2} M\n
   PR: ${p2}%\n
-
 二次繳交後精蟲狀況仍不佳，\n
 實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n
-建議可請個案安排再次凍精，或於受精療程當天使用新鮮精蟲。`;
+建議可請個案隔日再次凍精，或於受精療程當天使用新鮮精蟲。`;
 
       document.getElementById("output").innerText = message;
     }
 
-function generatePatient2B() {
-  let caseName = document.getElementById("caseName").value.trim();
-  let tubes = document.getElementById("tubes2").value.trim();
+    function generatePatient2B() {
+      let caseName = document.getElementById("caseName").value.trim();
+      let tubes = document.getElementById("tubes2").value.trim();
 
-  let abn = [];
-  let c2 = parseFloat(document.getElementById("conc22").value);
-  let p2 = parseFloat(document.getElementById("PR22").value);
+      let abn = [];
+      let c2 = parseFloat(document.getElementById("conc22").value);
+      let p2 = parseFloat(document.getElementById("PR22").value);
 
-  // 不檢查 volume
-  if (c2 < 15) abn.push("濃度偏低");
-  if (p2 < 30) abn.push("活動力不足");
+      if (c2 < 15) abn.push("濃度偏低");
+      if (p2 < 30) abn.push("活動力不足");
 
-  let abnText = abn.length > 0 ? `（${abn.join("、")}）` : "";
+      let abnText = abn.length > 0 ? `（${abn.join("、")}）` : "";
 
-  let message = `${caseName}您好，\n
+      let message = `${caseName}您好，\n
 今日您於本院繳交 2 次檢體，精蟲狀況仍不理想${abnText}。\n
 我們已先將此次精蟲冷凍 ${tubes} 管備用，\n
-建議您擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n
+建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。\n
 此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
-  document.getElementById("output").innerText = message;
-}
+      document.getElementById("output").innerText = message;
+    }
 
     // === 複製 ===
     function copyMessage() {
