@@ -9,19 +9,19 @@
       font-family: "Noto Sans TC", sans-serif;
       background-color: #fdfaf7;
       color: #4b3b30;
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       padding: 1.5rem;
     }
     h1 { text-align: center; margin-bottom: 1.5rem; }
-    label { display:block; margin-top:1rem; font-weight:bold; }
+    label { display:block; margin-top:0.8rem; font-weight:bold; }
     input, select {
       width:100%; padding:0.4rem; margin-top:0.3rem;
       border-radius:0.4rem; border:1px solid #ccc;
       font-size:14px;
     }
     button {
-      display:inline-block; margin:1.2rem 0.5rem 0 0;
+      display:inline-block; margin:1rem 0.5rem 0 0;
       padding:0.6rem 1.2rem;
       border:none; border-radius:0.5rem;
       background:#d8c3a5; color:#fff; font-size:14px;
@@ -33,10 +33,18 @@
       background:#fff;
       white-space:pre-line;
     }
+    .scenario-block { display:none; margin-top:1rem; }
   </style>
 </head>
 <body>
   <h1>凍精訊息產生器</h1>
+
+  <label for="scenario">選擇情境：</label>
+  <select id="scenario" onchange="switchScenario()">
+    <option value="">--請選擇--</option>
+    <option value="s1">情境 1：個案不在現場等候</option>
+    <option value="s2b">情境 2B：個案在現場，二次檢體仍不佳</option>
+  </select>
 
   <label>病歷號：<input type="text" id="caseId" placeholder="例：12345"></label>
   <label>姓名：<input type="text" id="caseName" placeholder="例：葉大雄"></label>
@@ -60,20 +68,36 @@
   </select>
   <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none;">
 
-  <h3>第一次檢體</h3>
-  <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
-  <label>Concentration (M)：<input type="number" id="conc1"></label>
-  <label>PR (%)：<input type="number" id="PR1"></label>
+  <!-- 情境 1 -->
+  <div id="scenario1" class="scenario-block">
+    <h3>檢體數據</h3>
+    <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
+    <label>Concentration (M)：<input type="number" id="conc1"></label>
+    <label>PR (%)：<input type="number" id="PR1"></label>
+    <label>冷凍管數：<input type="number" id="tubes1"></label>
 
-  <h3>第二次檢體</h3>
-  <label>Volume (ml)：<input type="number" id="volume2" step="0.1"></label>
-  <label>Concentration (M)：<input type="number" id="conc2"></label>
-  <label>PR (%)：<input type="number" id="PR2"></label>
+    <button onclick="generateDoctor1()">產生醫師訊息（情境1）</button>
+    <button onclick="generatePatient1()">產生個案訊息（情境1）</button>
+  </div>
 
-  <label>冷凍管數：<input type="number" id="tubes"></label>
+  <!-- 情境 2B -->
+  <div id="scenario2b" class="scenario-block">
+    <h3>第一次檢體</h3>
+    <label>Volume (ml)：<input type="number" id="volume21" step="0.1"></label>
+    <label>Concentration (M)：<input type="number" id="conc21"></label>
+    <label>PR (%)：<input type="number" id="PR21"></label>
 
-  <button onclick="generateDoctor2B()">產生醫師訊息（2B）</button>
-  <button onclick="generatePatient2B()">產生個案訊息（2B）</button>
+    <h3>第二次檢體</h3>
+    <label>Volume (ml)：<input type="number" id="volume22" step="0.1"></label>
+    <label>Concentration (M)：<input type="number" id="conc22"></label>
+    <label>PR (%)：<input type="number" id="PR22"></label>
+
+    <label>冷凍管數：<input type="number" id="tubes2"></label>
+
+    <button onclick="generateDoctor2B()">產生醫師訊息（情境2B）</button>
+    <button onclick="generatePatient2B()">產生個案訊息（情境2B）</button>
+  </div>
+
   <button onclick="copyMessage()">複製訊息</button>
 
   <div id="output"></div>
@@ -84,22 +108,89 @@
       custom.style.display = (this.value === "自填") ? "block" : "none";
     });
 
-    function generateDoctor2B() {
+    function switchScenario() {
+      document.getElementById("scenario1").style.display = "none";
+      document.getElementById("scenario2b").style.display = "none";
+      let s = document.getElementById("scenario").value;
+      if (s === "s1") document.getElementById("scenario1").style.display = "block";
+      if (s === "s2b") document.getElementById("scenario2b").style.display = "block";
+    }
+
+    // === 情境 1 ===
+    function generateDoctor1() {
       let caseId = document.getElementById("caseId").value.trim();
       let caseName = document.getElementById("caseName").value.trim();
-
       let doctor = document.getElementById("doctor").value;
       if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
 
-      let v1 = document.getElementById("volume1").value.trim();
-      let c1 = document.getElementById("conc1").value.trim();
-      let p1 = document.getElementById("PR1").value.trim();
+      let volume = parseFloat(document.getElementById("volume1").value);
+      let conc = parseFloat(document.getElementById("conc1").value);
+      let PR = parseFloat(document.getElementById("PR1").value);
+      let tubes = document.getElementById("tubes1").value.trim();
 
-      let v2 = document.getElementById("volume2").value.trim();
-      let c2 = document.getElementById("conc2").value.trim();
-      let p2 = document.getElementById("PR2").value.trim();
+      let abnormalities = [];
+      if (volume < 1) abnormalities.push(`Volume: ${volume} ml`);
+      if (conc < 15) abnormalities.push(`Concentration: ${conc} M`);
+      if (PR < 30) abnormalities.push(`PR: ${PR}%`);
 
-      let tubes = document.getElementById("tubes").value.trim();
+      if (abnormalities.length === 0) {
+        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
+        return;
+      }
+
+      let message = `${doctor}您好，
+
+今日凍精個案 #${caseId} ${caseName}
+檢體分析：
+${abnormalities.join("\n")}
+由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，
+建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。`;
+
+      document.getElementById("output").innerText = message;
+    }
+
+    function generatePatient1() {
+      let caseName = document.getElementById("caseName").value.trim();
+      let volume = parseFloat(document.getElementById("volume1").value);
+      let conc = parseFloat(document.getElementById("conc1").value);
+      let PR = parseFloat(document.getElementById("PR1").value);
+      let tubes = document.getElementById("tubes1").value.trim();
+
+      let abnormalities = [];
+      if (volume < 1) abnormalities.push("體積不足");
+      if (conc < 15) abnormalities.push("濃度偏低");
+      if (PR < 30) abnormalities.push("活動力不足");
+
+      if (abnormalities.length === 0) {
+        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
+        return;
+      }
+
+      let message = `${caseName}您好，
+
+今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。
+我們已將此次精蟲冷凍 ${tubes} 管，建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。
+此次凍精的檢驗報告已上傳至 APP，您可隨時查詢；若有任何疑問，也建議您回診與醫師諮詢。謝謝您。`;
+
+      document.getElementById("output").innerText = message;
+    }
+
+    // === 情境 2B ===
+    function generateDoctor2B() {
+      let caseId = document.getElementById("caseId").value.trim();
+      let caseName = document.getElementById("caseName").value.trim();
+      let doctor = document.getElementById("doctor").value;
+      if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
+
+      let v1 = document.getElementById("volume21").value.trim();
+      let c1 = document.getElementById("conc21").value.trim();
+      let p1 = document.getElementById("PR21").value.trim();
+
+      let v2 = document.getElementById("volume22").value.trim();
+      let c2 = document.getElementById("conc22").value.trim();
+      let p2 = document.getElementById("PR22").value.trim();
+
+      let tubes = document.getElementById("tubes2").value.trim();
 
       let message = `${doctor}您好，
 
@@ -122,12 +213,12 @@
 
     function generatePatient2B() {
       let caseName = document.getElementById("caseName").value.trim();
-      let tubes = document.getElementById("tubes").value.trim();
+      let tubes = document.getElementById("tubes2").value.trim();
 
       let abn = [];
-      let v2 = parseFloat(document.getElementById("volume2").value);
-      let c2 = parseFloat(document.getElementById("conc2").value);
-      let p2 = parseFloat(document.getElementById("PR2").value);
+      let v2 = parseFloat(document.getElementById("volume22").value);
+      let c2 = parseFloat(document.getElementById("conc22").value);
+      let p2 = parseFloat(document.getElementById("PR22").value);
 
       if (v2 < 1) abn.push("體積不足");
       if (c2 < 15) abn.push("濃度偏低");
@@ -145,6 +236,7 @@
       document.getElementById("output").innerText = message;
     }
 
+    // === 複製 ===
     function copyMessage() {
       let text = document.getElementById("output").innerText;
       if (!text || text.includes("不需傳訊息")) {
