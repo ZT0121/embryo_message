@@ -1,76 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>凍精訊息產生器</title>
   <style>
     body {
       font-family: "Noto Sans TC", sans-serif;
+      font-size: 13px;
       background-color: #fdfaf7;
       color: #4b3b30;
-      max-width: 700px;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 1.5rem;
-      font-size: 16px; /* 全域字體大小 */
-      line-height: 1.6;
+      padding: 2rem;
     }
     h1 {
       text-align: center;
-      margin-bottom: 1.2rem;
-      font-size: 20px;
-    }
-    .nav {
-      text-align: center;
       margin-bottom: 1.5rem;
     }
-    .nav a {
-      display: inline-block;
-      margin: 0 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      background: #d8c3a5;
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-      transition: background 0.2s;
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
     }
-    .nav a:hover {
-      background: #b89b7f;
-    }
-    label { display:block; margin-top:0.8rem; font-weight:bold; }
-    input, select {
-      width:100%; padding:0.5rem; margin-top:0.3rem;
-      border-radius:0.4rem; border:1px solid #ccc;
-      font-size:14px;
+    input, select, textarea {
+      width: 100%;
+      padding: 0.3rem;
+      margin-top: 0.3rem;
+      border-radius: 0.4rem;
+      border: 1px solid #ccc;
+      font-size: 13px;
     }
     button {
-      display:inline-block; margin:1rem 0.5rem 0 0;
-      padding:0.6rem 1.2rem;
-      border:none; border-radius:0.5rem;
-      background:#d8c3a5; color:#fff; font-size:14px;
-      cursor:pointer;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background:#b89b7f;
+      margin-top: 1rem;
+      background-color: #d8c3a5;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 11px;
+      line-height: 1.6;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      color: #fff;
     }
     #output {
-      margin-top:1.5rem; padding:1rem;
-      border:1px solid #ddd; border-radius:0.4rem;
-      background:#fff;
-      white-space:pre-line;
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #e0d6cd;
+      border-radius: 1rem;
+      white-space: pre-wrap;
     }
-    .scenario-block { display:none; margin-top:1rem; }
+    .scenario-block {
+      display: none;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h1>凍精訊息產生器</h1>
+  <h1>🧪凍精訊息產生器</h1>
+  <div class="nav" style="text-align: center; margin-bottom: 1.5rem;">
+    <a href="index.html"
+       style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s;"
+       onmouseover="this.style.backgroundColor='#e5c0a8'"
+       onmouseout="this.style.backgroundColor='#f3d7c3'">📜 報胚訊息</a>
 
-  <!-- 導航按鈕 -->
-  <div class="nav">
-    <a href="index.html">返回報胚訊息產生器</a>
-    <a href="rescueICSI.html">補救受精回報訊息產生器</a>
+    <a href="rescueICSI.html"
+       style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s; margin-left:0.5rem;"
+       onmouseover="this.style.backgroundColor='#e5c0a8'"
+       onmouseout="this.style.backgroundColor='#f3d7c3'">🧬 補救受精回報</a>
+
+    <a href="sperm.html"
+       style="display: inline-block; padding: 10px 16px; background-color: #d8c3a5; color: #fff; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; margin-left:0.5rem;">🧪 凍精訊息產生器</a>
   </div>
 
   <label for="scenario">選擇狀況：</label>
@@ -80,8 +82,11 @@
     <option value="s2b">個案在現場，二取仍不佳</option>
   </select>
 
-  <label>病歷號：<input type="text" id="caseId" placeholder="例：12345"></label>
-  <label>姓名：<input type="text" id="caseName" placeholder="例：葉大雄"></label>
+  <label>病歷號：</label>
+  <input type="text" id="caseId" placeholder="例：12345">
+
+  <label>姓名：</label>
+  <input type="text" id="caseName" placeholder="例：葉大雄">
 
   <label for="doctor">選擇醫師：</label>
   <select id="doctor">
@@ -173,37 +178,35 @@
       }
 
       let message = `${doctor}您好，\n
-今日凍精個案 #${caseId} ${caseName}\n
+今日凍精個案 #${caseId} ${caseName}
 檢體分析：\n
-${abnormalities.join("\n")}\n
+${abnormalities.join("\n")}
 由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n
-建議個案可以擇日再凍精，或者於受精療程當天使用新鮮精蟲受精。\n`;
+建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。\n`;
 
       document.getElementById("output").innerText = message;
     }
 
     function generatePatient1() {
       let caseName = document.getElementById("caseName").value.trim();
-      let volume = parseFloat(document.getElementById("volume1").value);
-      let conc = parseFloat(document.getElementById("conc1").value);
-      let PR = parseFloat(document.getElementById("PR1").value);
       let tubes = document.getElementById("tubes1").value.trim();
 
       let abnormalities = [];
+      let volume = parseFloat(document.getElementById("volume1").value);
+      let conc = parseFloat(document.getElementById("conc1").value);
+      let PR = parseFloat(document.getElementById("PR1").value);
+
       if (volume < 1) abnormalities.push("體積不足");
       if (conc < 15) abnormalities.push("濃度偏低");
       if (PR < 30) abnormalities.push("活動力不足");
 
-      if (abnormalities.length === 0) {
-        document.getElementById("output").innerText = "（數據無異常，不需傳訊息）";
-        return;
-      }
+      let abnText = abnormalities.length > 0 ? `（${abnormalities.join("、")}）` : "";
 
       let message = `${caseName}您好，\n
-今日檢體精蟲狀況較不理想（${abnormalities.join("、")}）。\n
+今日檢體精蟲狀況較不理想${abnText}。\n
 我們已先將此次精蟲冷凍 ${tubes} 管，\n
-建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。\n
-此次凍精的檢驗報告已上傳至 APP，您可隨時查詢；若有任何疑問，也建議您回診與醫師諮詢。\n
+建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n
+此次凍精的檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
       document.getElementById("output").innerText = message;
@@ -227,19 +230,13 @@ ${abnormalities.join("\n")}\n
       let tubes = document.getElementById("tubes2").value.trim();
 
       let message = `${doctor}您好，\n
-今日凍精個案 #${caseId} ${caseName}\n
+今日凍精個案 #${caseId} ${caseName}
 檢體分析：\n
-第一次：\n
-  Volume: ${v1} ml\n
-  Concentration: ${c1} M\n
-  PR: ${p1}%\n
-第二次：\n
-  Volume: ${v2} ml\n
-  Concentration: ${c2} M\n
-  PR: ${p2}%\n
+第一次：\n  Volume: ${v1} ml\n  Concentration: ${c1} M\n  PR: ${p1}%\n
+第二次：\n  Volume: ${v2} ml\n  Concentration: ${c2} M\n  PR: ${p2}%\n
 二次繳交後精蟲狀況仍不佳，\n
 實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n
-建議可請個案隔日再次凍精，或於受精療程當天使用新鮮精蟲。`;
+建議可請個案擇日安排再次凍精，或於受精療程當天使用新鮮精蟲。`;
 
       document.getElementById("output").innerText = message;
     }
@@ -260,7 +257,7 @@ ${abnormalities.join("\n")}\n
       let message = `${caseName}您好，\n
 今日您於本院繳交 2 次檢體，精蟲狀況仍不理想${abnText}。\n
 我們已先將此次精蟲冷凍 ${tubes} 管備用，\n
-建議您可擇日再次凍精，或於受精療程當天提供新鮮精液。\n
+建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n
 此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
