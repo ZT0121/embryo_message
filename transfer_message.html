@@ -25,12 +25,14 @@ main{max-width:1000px;margin:18px auto;padding:0 16px;display:grid;grid-template
 @media(min-width:900px){.grid{grid-template-columns:repeat(12,1fr)}}
 .col-3{grid-column:span 12}@media(min-width:900px){.col-3{grid-column:span 3}}
 .col-4{grid-column:span 12}@media(min-width:900px){.col-4{grid-column:span 4}}
+.col-5{grid-column:span 12}@media(min-width:900px){.col-5{grid-column:span 5}}
 .col-6{grid-column:span 12}@media(min-width:900px){.col-6{grid-column:span 6}}
+.col-7{grid-column:span 12}@media(min-width:900px){.col-7{grid-column:span 7}}
 .col-12{grid-column:span 12}
 label{display:block;font-size:13px;color:#cbd5e1;margin:2px 2px 6px}
 input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b152b;color:var(--ink);outline:2px solid transparent;outline-offset:2px;transition:outline .15s,border .15s}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-color:var(--focus)}
-.small{font-size:12px;color:var(--muted)}
+.small{font-size:12px;color:#94a3b8}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .btn{appearance:none;border:1px solid #2c4690;background:linear-gradient(180deg,var(--btn),var(--btn2));color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .06s,box-shadow .15s;box-shadow:0 6px 18px rgba(32,66,140,.35),inset 0 1px 0 rgba(255,255,255,.06)}
 .btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
@@ -38,12 +40,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
 .btn.warn{background:linear-gradient(180deg,#b07a0b,var(--warn));border-color:#a27409}
 .output{min-height:160px;white-space:pre-wrap;background:#0a1226;border:1px dashed #25407f;border-radius:14px;padding:14px;color:var(--ink)}
 .hr{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);border:none;margin:10px 0}
-.hist{display:grid;gap:10px}
-.item{background:#0b152b;border:1px solid var(--line);border-radius:12px;padding:10px}
-.top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
-.meta{font-size:12px;color:#cbd5e1}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .badge{font-size:12px;color:#cbd5e1;background:#0f1a33;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
-.note{padding:10px;border:1px dashed var(--line);border-radius:10px;background:#0a1226;color:#cbd5e1}
+.table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.table th,.table td{padding:8px;border:1px solid #223054;background:#0b152b}
+.table th{background:#0e1b3c;font-size:12px;color:#cbd5e1}
+.table td input{width:100%;padding:8px;border-radius:8px;border:1px solid #223054;background:#0b152b;color:#e5e7eb}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 </style>
 </head>
 <body>
@@ -70,29 +72,56 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
             <div class="col-4">
               <label>模板</label>
               <select id="tplDoc">
-                <option value="doc_single">轉入完成通知｜單筆</option>
-                <option value="doc_group">團體轉入完成｜多筆</option>
+                <option value="doc_single">(醫師) 完成轉移通知｜單筆</option>
+                <option value="doc_group">(醫師) 團體轉入完成｜多筆</option>
               </select>
             </div>
             <div class="col-4">
-              <label>醫師 <button id="btnRoster" type="button" class="btn" style="margin-left:6px;padding:4px 8px">名冊</button></label>
+              <label>轉入種類</label>
+              <select id="docType">
+                <option value="胚胎">胚胎</option>
+                <option value="卵子">卵子</option>
+                <option value="凍精">凍精</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label>對象醫師稱呼 <button id="btnRoster" type="button" class="btn" style="margin-left:6px;padding:4px 8px">名冊</button></label>
               <input id="doctorName" placeholder="例：陳醫師" list="doctorList">
               <datalist id="doctorList"></datalist>
-              <div class="small">可輸入或選擇</div>
+            </div>
+
+            <!-- 單筆：分欄 -->
+            <div class="col-4 only doc_single">
+              <label>病歷號</label>
+              <input id="caseNo" placeholder="12345">
             </div>
             <div class="col-4 only doc_single">
-              <label>個案顯示（單筆）</label>
-              <input id="caseSingle" placeholder="#病歷號 姓名">
+              <label>姓名</label>
+              <input id="caseName" placeholder="王小明">
             </div>
+            <div class="col-4 only doc_single"></div>
+
+            <!-- 多筆：表格 -->
             <div class="col-12 only doc_group">
-              <label>個案清單（每行一筆）</label>
-              <textarea id="caseGroup" rows="4" placeholder="#病歷號 姓名&#10;#病歷號 姓名"></textarea>
+              <label>多筆個案（病歷號＋姓名）</label>
+              <table class="table" id="groupTable">
+                <thead>
+                  <tr><th style="width:30%">病歷號</th><th style="width:50%">姓名</th><th style="width:20%">操作</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <div class="row">
+                <button class="btn" id="addRow">新增一列</button>
+                <button class="btn warn" id="clearRows">清空表格</button>
+              </div>
             </div>
 
             <div class="col-12">
               <div class="row">
                 <button class="btn" id="genDoc">產生訊息</button>
                 <button class="btn ok" id="copyDoc">複製</button>
+                <button class="btn" id="saveDoc">存入歷史</button>
+                <button class="btn warn" id="clearDoc">清空</button>
               </div>
             </div>
 
@@ -101,6 +130,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
               <div id="outDoc" class="output mono"></div>
             </div>
           </div>
+        </div>
+
+        <div class="section">
+          <strong>歷史紀錄（醫師通知）</strong>
+          <div id="histDoc" class="hist"></div>
         </div>
       </div>
     </div>
@@ -113,13 +147,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
             <div class="col-4">
               <label>模板</label>
               <select id="tplPt">
-                <option value="pt_import">通知轉胚完成</option>
-                <option value="pt_export">通知輸出已完成提領</option>
+                <option value="pt_import">(實驗室)通知轉胚完成</option>
+                <option value="pt_export">(實驗室)通知輸出已完成提領</option>
               </select>
             </div>
             <div class="col-4">
               <label>病人稱呼</label>
-              <input id="ptName" placeholder="例：宜靜">
+              <input id="ptName" placeholder="例：名字 / 李小姐">
             </div>
             <div class="col-4">
               <label>類型</label>
@@ -129,14 +163,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
                 <option value="凍精">凍精</option>
               </select>
             </div>
-            <div class="col-12 only pt_import">
-              <label>院名</label>
-              <input id="clinic" placeholder="禾馨宜蘊生殖中心（台北院區）">
-            </div>
+
             <div class="col-12">
               <div class="row">
                 <button class="btn" id="genPt">產生訊息</button>
                 <button class="btn ok" id="copyPt">複製</button>
+                <button class="btn" id="savePt">存入歷史</button>
+                <button class="btn warn" id="clearPt">清空</button>
               </div>
             </div>
             <div class="col-12">
@@ -144,6 +177,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
               <div id="outPt" class="output mono"></div>
             </div>
           </div>
+        </div>
+
+        <div class="section">
+          <strong>歷史紀錄（病人通知）</strong>
+          <div id="histPt" class="hist"></div>
         </div>
       </div>
     </div>
@@ -165,68 +203,228 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
 </div>
 
 <script>
-// 初始名冊
-(function initDefaultRoster(){
-  const STORAGE_ROSTER='NUWA_DOCTOR_ROSTER';
-  if(!localStorage.getItem(STORAGE_ROSTER)){
-    const defaultList=["陳醫師","廖醫師","沈醫師","詹醫師","張醫師","王醫師","林醫師","劉醫師","朱醫師","吳醫師","何醫師","洪醫師","李醫師"];
-    localStorage.setItem(STORAGE_ROSTER,JSON.stringify(defaultList));
-  }
-})();
-const STORAGE_RECENT='NUWA_DOCTOR_RECENT';
-function loadRoster(){try{return JSON.parse(localStorage.getItem('NUWA_DOCTOR_ROSTER')||'[]')}catch{return[]}}
-function saveRoster(list){localStorage.setItem('NUWA_DOCTOR_ROSTER',JSON.stringify(list))}
-function loadRecent(){try{return JSON.parse(localStorage.getItem(STORAGE_RECENT)||'[]')}catch{return[]}}
-function pushRecent(name){if(!name)return;const list=loadRecent().filter(x=>x!==name);list.unshift(name);if(list.length>12)list.length=12;localStorage.setItem(STORAGE_RECENT,JSON.stringify(list))}
-function refreshDoctorOptions(){
- const dl=document.getElementById('doctorList');if(!dl)return;
- const roster=loadRoster(),recent=loadRecent(),seen=new Set();
- const order=[...recent,...roster].filter(Boolean).filter(n=>{if(seen.has(n))return false;seen.add(n);return true});
- dl.innerHTML='';order.forEach(n=>{const opt=document.createElement('option');opt.value=n;dl.appendChild(opt)});
-}
-(function setupRosterUI(){
- const btn=document.getElementById('btnRoster'),modal=document.getElementById('rosterModal'),
- txt=document.getElementById('rosterText'),btnSave=document.getElementById('saveRoster'),
- btnClear=document.getElementById('clearRoster'),btnClose=document.getElementById('closeRoster');
- btn.onclick=()=>{txt.value=loadRoster().join('\n');modal.style.display='flex';};
- btnClose.onclick=()=>{modal.style.display='none'};
- btnSave.onclick=()=>{const lines=txt.value.split('\n').map(s=>s.trim()).filter(Boolean);const uniq=[];const seen=new Set();for(const l of lines){if(!seen.has(l)){seen.add(l);uniq.push(l)}}saveRoster(uniq);refreshDoctorOptions();toast('名冊已儲存')};
- btnClear.onclick=()=>{saveRoster([]);refreshDoctorOptions();txt.value='';toast('名冊已清空')};
- refreshDoctorOptions();
-})();
-
-function $(id){return document.getElementById(id)}
+/* ===== 工具 ===== */
+const $=id=>document.getElementById(id);
 function toast(msg){const t=document.createElement('div');t.textContent=msg;Object.assign(t.style,{position:'fixed',left:'50%',top:'16px',transform:'translateX(-50%)',background:'#0f7036',border:'1px solid #198045',padding:'10px 14px',color:'#fff',borderRadius:'10px',zIndex:9999,boxShadow:'0 8px 24px rgba(0,0,0,.35)'});document.body.appendChild(t);setTimeout(()=>t.remove(),1100)}
 
+/* ===== 左側分頁 ===== */
 document.querySelectorAll('.tab').forEach(btn=>{
- btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
- document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
- btn.classList.add('active');$(btn.dataset.target).classList.add('active');}
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $(btn.dataset.target).classList.add('active');
+  };
 });
 
-/* 醫師 */
-const D={tpl:$('tplDoc'),doctor:$('doctorName'),single:$('caseSingle'),group:$('caseGroup'),out:$('outDoc'),gen:$('genDoc'),copy:$('copyDoc')};
-function buildDoc(){
- const doctor=(D.doctor.value||'O醫師').trim();
- if(D.tpl.value==='doc_single'){const cas=(D.single.value||'#病歷號 姓名').trim();pushRecent(doctor);refreshDoctorOptions();return`${doctor}，午安\n通知您，${cas} 的胚胎／卵子／凍精已完成轉入實驗室作業，謝謝您。`;}
- const lines=(D.group.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
- const list=lines.length?lines.join('\n'):'#病歷號 姓名\n#病歷號 姓名\n#病歷號 姓名';
- pushRecent(doctor);refreshDoctorOptions();
- return`${doctor}您好，今日已順利完成轉移的個案有：\n${list}\n\n謝謝您🙏`;
+/* ===== 醫師名冊（localStorage） ===== */
+(function initDefaultRoster(){
+  const KEY='NUWA_DOCTOR_ROSTER';
+  if(!localStorage.getItem(KEY)){
+    const list=["陳醫師","廖醫師","沈醫師","詹醫師","張醫師","王醫師","林醫師","劉醫師","朱醫師","吳醫師","何醫師","洪醫師","李醫師"];
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }
+})();
+const STORAGE_ROSTER='NUWA_DOCTOR_ROSTER';
+const STORAGE_RECENT='NUWA_DOCTOR_RECENT';
+function loadRoster(){try{return JSON.parse(localStorage.getItem(STORAGE_ROSTER)||'[]')}catch{return[]}}
+function saveRoster(list){localStorage.setItem(STORAGE_ROSTER, JSON.stringify(list))}
+function loadRecent(){try{return JSON.parse(localStorage.getItem(STORAGE_RECENT)||'[]')}catch{return[]}}
+function pushRecent(name){if(!name)return;const list=loadRecent().filter(x=>x!==name);list.unshift(name);if(list.length>12)list.length=12;localStorage.setItem(STORAGE_RECENT, JSON.stringify(list))}
+function refreshDoctorOptions(){
+  const dl=$('doctorList');if(!dl)return;
+  const roster=loadRoster(),recent=loadRecent(),seen=new Set();
+  const order=[...recent,...roster].filter(Boolean).filter(n=>{if(seen.has(n))return false;seen.add(n);return true});
+  dl.innerHTML=''; order.forEach(n=>{const opt=document.createElement('option');opt.value=n;dl.appendChild(opt);});
 }
-D.gen.onclick=()=>{D.out.textContent=buildDoc()};
-D.copy.onclick=()=>{const t=D.out.textContent.trim();if(!t)return;navigator.clipboard.writeText(t).then(()=>toast('已複製'))};
+(function setupRosterUI(){
+  const btn=$('btnRoster'),modal=$('rosterModal'),txt=$('rosterText');
+  $('closeRoster').onclick=()=>modal.style.display='none';
+  btn.onclick=()=>{txt.value=loadRoster().join('\n');modal.style.display='flex';};
+  $('saveRoster').onclick=()=>{const lines=txt.value.split('\n').map(s=>s.trim()).filter(Boolean);const uniq=[...new Set(lines)];saveRoster(uniq);refreshDoctorOptions();toast('名冊已儲存')};
+  $('clearRoster').onclick=()=>{saveRoster([]);txt.value='';refreshDoctorOptions();toast('名冊已清空')};
+  refreshDoctorOptions();
+})();
 
-/* 病人 */
-const P={tpl:$('tplPt'),name:$('ptName'),type:$('ptType'),clinic:$('clinic'),out:$('outPt'),gen:$('genPt'),copy:$('copyPt')};
-function buildPt(){
- const n=(P.name.value||'名字').trim(),t=P.type.value;
- if(P.tpl.value==='pt_import'){const c=(P.clinic.value||'禾馨宜蘊生殖中心（台北院區）').trim();
- return`${n} 您好，\n您的 ${t} 已於今日順利轉入 ${c}。\n相關詳細資訊可透過 App 查詢。\n此訊息以 LINE 傳送，方便您後續療程的安排，謝謝您。`;}
- return`${n} 您好，通知您的 ${t} 已經完成提領進行運輸，謝謝您。`;
+/* ===== 病歷號：自動 # 前綴 ===== */
+function withHash(v){v=String(v||'').trim(); if(!v) return ''; return v.startsWith('#')?v:'#'+v;}
+function bindHashInput(input){
+  if(!input) return;
+  input.addEventListener('blur',()=>{input.value=withHash(input.value.replace(/\s+/g,''))});
+  input.addEventListener('input',()=>{ if(/^#?\d*$/.test(input.value)) return; input.value=input.value.replace(/[^#\d]/g,''); });
 }
-P.gen.onclick=()=>{P.out.textContent=buildPt()};
-P.copy.onclick=()=>{const t=P.out.textContent.trim();if(!t)return;navigator.clipboard.writeText(t).then(()=>toast('已複製'))};
+
+/* ===== 醫師：多筆表格 ===== */
+const groupTableBody = document.querySelector('#groupTable tbody');
+function addRow(no='',name=''){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input class="no" placeholder="12345" value="${no?String(no).replace(/^#/,''):''}"></td>
+                <td><input class="nm" placeholder="王小明" value="${name||''}"></td>
+                <td><button class="btn warn del">刪除</button></td>`;
+  groupTableBody.appendChild(tr);
+  const noInput=tr.querySelector('.no'); bindHashInput(noInput);
+  tr.querySelector('.del').onclick=()=>tr.remove();
+}
+$('addRow').onclick=()=>addRow();
+$('clearRows').onclick=()=>{groupTableBody.innerHTML='';};
+addRow(); addRow();
+
+/* ===== 醫師：單筆欄位 ===== */
+bindHashInput($('caseNo'));
+
+/* ===== 醫師：產生/複製/歷史 ===== */
+const D={
+  tpl:$('tplDoc'), type:$('docType'), doctor:$('doctorName'),
+  caseNo:$('caseNo'), caseName:$('caseName'),
+  out:$('outDoc'), gen:$('genDoc'), copy:$('copyDoc'), save:$('saveDoc'), clear:$('clearDoc'),
+  hist:$('histDoc')
+};
+const STORAGE_D='NUWA_DOC_HISTORY_v2';
+
+function buildDocSingle(){
+  const doctor=(D.doctor.value||'O醫師').trim();
+  const no=withHash(D.caseNo.value);
+  const name=(D.caseName.value||'姓名').trim();
+  const t=D.type.value;
+  return `${doctor}，午安
+通知您，${no} ${name} 的${t}已完成轉入實驗室作業，謝謝您。`;
+}
+function buildDocGroup(){
+  const doctor=(D.doctor.value||'O醫師').trim();
+  const t=D.type.value;
+  const rows=[...groupTableBody.querySelectorAll('tr')].map(tr=>{
+    const no=withHash(tr.querySelector('.no').value);
+    const nm=(tr.querySelector('.nm').value||'姓名').trim();
+    if(!no && !nm) return '';
+    return `${no||'#?????'} ${nm}`;
+  }).filter(Boolean);
+  const list=rows.length?rows.join('\n'):'#12345 姓名\n#23456 姓名';
+  return `${doctor}您好，今日已順利完成${t}轉移的個案有：
+${list}
+
+謝謝您🙏`;
+}
+function buildDoc(){ return D.tpl.value==='doc_single' ? buildDocSingle() : buildDocGroup(); }
+
+function copyText(el){const t=el.textContent.trim(); if(!t) return; navigator.clipboard.writeText(t).then(()=>toast('已複製'));}
+function saveDoc(){
+  const payload={
+    ts:Date.now(), tpl:D.tpl.value, type:D.type.value, doctor:D.doctor.value,
+    single:{no:D.caseNo.value, name:D.caseName.value},
+    group:[...groupTableBody.querySelectorAll('tr')].map(tr=>({no:tr.querySelector('.no').value, name:tr.querySelector('.nm').value})),
+    out:D.out.textContent.trim()
+  };
+  if(!payload.out) return;
+  const list=JSON.parse(localStorage.getItem(STORAGE_D)||'[]'); list.unshift(payload); if(list.length>80) list.length=80;
+  localStorage.setItem(STORAGE_D, JSON.stringify(list)); renderDocHist(); toast('已存入歷史');
+}
+function renderDocHist(){
+  const list=JSON.parse(localStorage.getItem(STORAGE_D)||'[]'); D.hist.innerHTML='';
+  if(!list.length){D.hist.innerHTML='<div class="small">尚無紀錄</div>';return;}
+  for(const it of list){
+    const d=new Date(it.ts); const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const wrap=document.createElement('div'); wrap.className='item'; wrap.style.border='1px solid #223054'; wrap.style.borderRadius='12px'; wrap.style.padding='10px'; wrap.style.background='#0b152b';
+    const top=document.createElement('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.gap='8px'; top.style.alignItems='center';
+    const meta=document.createElement('div'); meta.className='small'; meta.textContent=`${ds} · ${(it.tpl==='doc_single'?'醫師·單筆':'醫師·團體')} · ${it.type||''}`;
+    const actions=document.createElement('div'); actions.className='row';
+    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='填回表單';
+    b1.onclick=()=>{
+      D.tpl.value=it.tpl; D.type.value=it.type||'胚胎'; D.doctor.value=it.doctor||'';
+      if(it.tpl==='doc_single'){
+        $('caseNo').value=it.single?.no||''; $('caseName').value=it.single?.name||'';
+      }else{
+        groupTableBody.innerHTML=''; (it.group||[]).forEach(r=>addRow(r.no, r.name)); if(!(it.group||[]).length) addRow();
+      }
+      D.out.textContent=it.out||''; scrollTo({top:0,behavior:'smooth'});
+    };
+    const b2=document.createElement('button'); b2.className='btn'; b2.textContent='複製產出';
+    b2.onclick=()=>{navigator.clipboard.writeText(it.out||'').then(()=>toast('已複製'));};
+    const b3=document.createElement('button'); b3.className='btn warn'; b3.textContent='刪除';
+    b3.onclick=()=>{const l=(JSON.parse(localStorage.getItem(STORAGE_D)||'[]')).filter(x=>x.ts!==it.ts); localStorage.setItem(STORAGE_D, JSON.stringify(l)); renderDocHist();};
+    actions.append(b1,b2,b3); top.append(meta,actions);
+    const pre=document.createElement('pre'); pre.className='mono'; pre.style.margin='6px 0 0 0'; pre.textContent=it.out||'';
+    wrap.append(top,pre); D.hist.append(wrap);
+  }
+}
+renderDocHist();
+
+D.gen.onclick=()=>{D.out.textContent=buildDoc(); pushRecent(D.doctor.value.trim()); refreshDoctorOptions();};
+D.copy.onclick=()=>copyText(D.out);
+D.save.onclick=saveDoc;
+D.clear.onclick=()=>{
+  ['doctor','caseNo','caseName'].forEach(k=>{const el=$(k); if(el) el.value='';});
+  groupTableBody.innerHTML=''; addRow(); addRow();
+  D.out.textContent=''; toast('已清空');
+};
+$('tplDoc').addEventListener('change',()=>{
+  document.querySelectorAll('.only').forEach(n=>n.style.display='none');
+  document.querySelectorAll('.only.'+D.tpl.value).forEach(n=>n.style.display='');
+});
+
+/* ===== 病人通知 ===== */
+const P={tpl:$('tplPt'),name:$('ptName'),type:$('ptType'),
+  out:$('outPt'),gen:$('genPt'),copy:$('copyPt'),save:$('savePt'),clear:$('clearPt'),hist:$('histPt')};
+const STORAGE_P='NUWA_PT_HISTORY_v2';
+
+function buildPt(){
+  const name=(P.name.value||'名字').trim();
+  const type=P.type.value;
+  if(P.tpl.value==='pt_import'){
+    return `${name} 您好，
+您的 ${type} 已於今日順利轉入 禾馨宜蘊生殖中心（台北院區）。
+相關詳細資訊可透過 App 查詢。
+此訊息以 LINE 傳送，方便您後續療程的安排，謝謝您。`;
+  }
+  return `${name} 您好，通知您的 ${type} 已經完成提領進行運輸，謝謝您。`;
+}
+function savePt(){
+  const out=P.out.textContent.trim(); if(!out) return;
+  const item={ts:Date.now(),tpl:P.tpl.value,name:P.name.value,type:P.type.value,out};
+  const list=JSON.parse(localStorage.getItem(STORAGE_P)||'[]'); list.unshift(item); if(list.length>80) list.length=80;
+  localStorage.setItem(STORAGE_P, JSON.stringify(list)); renderPtHist(); toast('已存入歷史');
+}
+function renderPtHist(){
+  const list=JSON.parse(localStorage.getItem(STORAGE_P)||'[]'); P.hist.innerHTML='';
+  if(!list.length){P.hist.innerHTML='<div class="small">尚無紀錄</div>';return;}
+  for(const it of list){
+    const d=new Date(it.ts); const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const wrap=document.createElement('div'); wrap.className='item'; wrap.style.border='1px solid #223054'; wrap.style.borderRadius='12px'; wrap.style.padding='10px'; wrap.style.background='#0b152b';
+    const top=document.createElement('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.gap='8px'; top.style.alignItems='center';
+    const meta=document.createElement('div'); meta.className='small'; const map={pt_import:'病人·轉胚完成',pt_export:'病人·輸出提領'}; meta.textContent=`${ds} · ${map[it.tpl]||it.tpl}`;
+    const actions=document.createElement('div'); actions.className='row';
+    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='填回表單';
+    b1.onclick=()=>{P.tpl.value=it.tpl; P.name.value=it.name||''; P.type.value=it.type||'卵子'; P.out.textContent=it.out||''; scrollTo({top:0,behavior:'smooth'});}
+    const b2=document.createElement('button'); b2.className='btn'; b2.textContent='複製產出';
+    b2.onclick=()=>{navigator.clipboard.writeText(it.out||'').then(()=>toast('已複製'));};
+    const b3=document.createElement('button'); b3.className='btn warn'; b3.textContent='刪除';
+    b3.onclick=()=>{const l=(JSON.parse(localStorage.getItem(STORAGE_P)||'[]')).filter(x=>x.ts!==it.ts); localStorage.setItem(STORAGE_P, JSON.stringify(l)); renderPtHist();};
+    actions.append(b1,b2,b3); top.append(meta,actions);
+    const pre=document.createElement('pre'); pre.className='mono'; pre.style.margin='6px 0 0 0'; pre.textContent=it.out||'';
+    wrap.append(top,pre); P.hist.append(wrap);
+  }
+}
+renderPtHist();
+
+P.gen.onclick=()=>{P.out.textContent=buildPt();};
+P.copy.onclick=()=>{const t=P.out.textContent.trim(); if(!t) return; navigator.clipboard.writeText(t).then(()=>toast('已複製'));};
+P.save.onclick=savePt;
+P.clear.onclick=()=>{['ptName'].forEach(k=>{const el=$(k); if(el) el.value='';}); P.type.value='卵子'; P.out.textContent=''; toast('已清空');};
+
+/* ===== 快捷鍵 ===== */
+document.addEventListener('keydown',(e)=>{
+  const isMac=navigator.platform.toUpperCase().includes('MAC');
+  const meta=isMac?e.metaKey:e.ctrlKey;
+  if(meta && e.key==='Enter'){
+    e.preventDefault();
+    if($('panel-doctor').classList.contains('active')) $('genDoc').click();
+    else $('genPt').click();
+  }
+  if(meta && e.key.toLowerCase()==='c' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+    e.preventDefault();
+    if($('panel-doctor').classList.contains('active')) $('copyDoc').click();
+    else $('copyPt').click();
+  }
+});
 </script>
 </body>
 </html>
