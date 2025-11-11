@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Transfer Message｜NUWA 訊息產生器</title>
+<title>轉入｜輸出 回報訊息產生器</title>
 <link rel="icon" href="./favicon.png">
 <style>
 :root{--ink:#e5e7eb;--muted:#94a3b8;--line:#223054;--bg:#0b1020;--card:#0c1428;--focus:#3356a7;--btn:#2a4aa1;--btn2:#203a83;--ok:#0f7036;--warn:#8c6307}
@@ -50,7 +50,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
 <header>
   <div class="h-inner">
     <div class="logo" aria-hidden="true"></div>
-    <h1>Transfer Message｜NUWA 訊息產生器</h1>
+    <h1>轉入｜輸出 回報訊息產生器</h1>
     <span class="badge">醫師與病人訊息模板</span>
   </div>
 </header>
@@ -70,15 +70,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
             <div class="col-4">
               <label>模板</label>
               <select id="tplDoc">
-                <option value="doc_single">(醫師) 完成轉移通知｜單筆</option>
-                <option value="doc_group">(醫師) 團體轉入完成｜多筆</option>
+                <option value="doc_single">轉入完成通知｜單筆</option>
+                <option value="doc_group">團體轉入完成｜多筆</option>
               </select>
             </div>
             <div class="col-4">
-              <label>對象醫師稱呼 <button id="btnRoster" type="button" class="btn" style="margin-left:6px;padding:4px 8px">名冊</button></label>
+              <label>醫師 <button id="btnRoster" type="button" class="btn" style="margin-left:6px;padding:4px 8px">名冊</button></label>
               <input id="doctorName" placeholder="例：陳醫師" list="doctorList">
               <datalist id="doctorList"></datalist>
-              <div class="small">可輸入或選擇，下拉名冊可自訂。</div>
+              <div class="small">可輸入或選擇</div>
             </div>
             <div class="col-4 only doc_single">
               <label>個案顯示（單筆）</label>
@@ -113,13 +113,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-co
             <div class="col-4">
               <label>模板</label>
               <select id="tplPt">
-                <option value="pt_import">(實驗室)通知轉胚完成</option>
-                <option value="pt_export">(實驗室)通知輸出已完成提領</option>
+                <option value="pt_import">通知轉胚完成</option>
+                <option value="pt_export">通知輸出已完成提領</option>
               </select>
             </div>
             <div class="col-4">
               <label>病人稱呼</label>
-              <input id="ptName" placeholder="例：名字 / 李小姐">
+              <input id="ptName" placeholder="例：宜靜">
             </div>
             <div class="col-4">
               <label>類型</label>
