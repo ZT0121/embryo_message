@@ -1,0 +1,56 @@
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      font-size: 13px;
+      background-color: #fdfaf7;
+      color: #4b3b30;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.3rem;
+      margin-top: 0.3rem;
+      border-radius: 0.4rem;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+    button {
+      margin-top: 1rem;
+      background-color: #d8c3a5;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 11px;
+      line-height: 1.6;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    #output {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #e0d6cd;
+      border-radius: 1rem;
+      white-space: pre-wrap;
+    }
+.history-message {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.8;
+  font-size: 13px;
+  font-family: "Noto Sans TC", sans-serif;
+  color: #4b3b30;
+}
+
+  </style>
