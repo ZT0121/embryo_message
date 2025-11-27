@@ -6,155 +6,258 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>報胚訊息</title>
   <style>
+    /* 全域設定 */
     body {
-      font-family: "Noto Sans TC", sans-serif;
-      font-size: 13px;
-      background-color: #fdfaf7;
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      background-color: #fdfaf7; /* 溫暖的米色背景 */
       color: #4b3b30;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 2rem;
+      margin: 0;
+      padding: 2rem 1rem;
+      line-height: 1.6;
     }
+
+    /* 限制最大寬度的容器 */
+    .container {
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    /* 卡片式設計核心 */
+    .card {
+      background-color: #ffffff;
+      padding: 2rem 2rem 2.5rem;
+      border-radius: 1.5rem; /* 圓角 */
+      box-shadow: 0 10px 30px rgba(216, 195, 165, 0.25); /* 柔和的陰影 */
+      border: 1px solid #f0e6dc;
+    }
+
     h1 {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #5e473a;
+      font-weight: 800;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
     }
+
+    /* 導航區塊樣式 */
+    .nav {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: #fcefe6;
+      color: #8c6b5d;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+    
+    .nav-btn:hover {
+      background-color: #f3d7c3;
+      transform: translateY(-2px); /* 滑鼠懸停時上浮 */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    /* 表單元件美化 */
     label {
       display: block;
-      margin-top: 1rem;
-      font-weight: bold;
+      margin-top: 1.4rem;
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+      color: #6d5648;
+      font-size: 0.95rem;
     }
-    /* 隱藏元素的樣式類別 */
-    .hidden {
-        display: none !important;
-    }
-    input, select, textarea {
+
+    input, select {
       width: 100%;
-      padding: 0.3rem;
-      margin-top: 0.3rem;
-      border-radius: 0.4rem;
-      border: 1px solid #ccc;
-      font-size: 13px;
+      padding: 0.7rem 0.8rem;
+      border-radius: 0.7rem;
+      border: 2px solid #eee5dd;
+      font-size: 1rem;
+      background-color: #fdfdfd;
+      transition: all 0.2s;
+      box-sizing: border-box;
     }
-    /* 優化輸入框焦點效果 */
-    input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: #d8c3a5;
-        box-shadow: 0 0 5px rgba(216, 195, 165, 0.5);
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #d8c3a5;
+      box-shadow: 0 0 0 4px rgba(216, 195, 165, 0.2); /* 聚焦時的光暈 */
+      background-color: #fff;
     }
+
+    /* 按鈕美化 */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
     button {
-      margin-top: 1rem;
+      flex: 1; /* 讓按鈕平均分配寬度 */
       background-color: #d8c3a5;
+      color: #4b3b30;
       border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 11px;
-      line-height: 1.6;
+      padding: 0.9rem 1rem;
+      border-radius: 0.8rem;
+      font-size: 1rem;
+      font-weight: bold;
       cursor: pointer;
-      margin-right: 0.5rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
+
     button:hover {
-        opacity: 0.9;
+      background-color: #cbb08e;
+      transform: translateY(-2px); /* 上浮效果 */
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     }
+
+    /* 輸出區塊 */
     #output {
       margin-top: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border: 1px solid #e0d6cd;
+      padding: 1.5rem;
+      background: #faf7f5;
+      border: 2px dashed #e0d6cd;
       border-radius: 1rem;
       white-space: pre-wrap;
+      font-size: 0.95rem;
+      color: #444;
     }
+
+    /* 歷史紀錄區塊 */
+    #history {
+      margin-top: 2.5rem;
+      background-color: #fff;
+      padding: 1.5rem 2rem;
+      border-radius: 1.5rem;
+      border: 1px solid #f0e6dc;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    }
+    
     .history-message {
       white-space: pre-wrap;
       word-break: break-word;
-      line-height: 1.8;
-      font-size: 13px;
-      font-family: "Noto Sans TC", sans-serif;
-      color: #4b3b30;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      color: #555;
     }
-    /* 導航按鈕樣式 */
-    .nav {
-        text-align: center;
-        margin-bottom: 1.5rem;
+
+    #historyList {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1rem;
     }
-    .nav-btn {
-        display: inline-block;
-        padding: 10px 16px;
-        background-color: #f3d7c3;
-        color: #5e473a;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 0.95em;
-        transition: background-color 0.3s;
-        margin: 0.2rem;
+
+    #historyList li {
+      border: 1px solid #eee;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: all 0.2s;
     }
-    .nav-btn:hover {
-        background-color: #e5c0a8;
+
+    #historyList li:hover {
+        background-color: #fdfaf7;
+        border-color: #e0d6cd;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* 手機版適配微調 */
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.2rem 2rem; }
+      h1 { font-size: 1.6rem; }
+      body { padding: 1rem 0.5rem; }
     }
   </style>
 </head>
 <body>
-  <h1>📜報胚訊息</h1>
-  
+
+<div class="container">
+  <h1>📜 報胚訊息</h1>
   <div class="nav">
-    <a href="rescueICSI.html" class="nav-btn">🧬 補救受精回報</a>
-    <a href="sperm.html" class="nav-btn">🧪 凍精訊息產生器</a>
-    <a href="transfer_message.html" class="nav-btn">📦 轉入｜輸出 回報訊息產生器</a>
+    <a href="rescueICSI.html" class="nav-btn">🧬 補救受精</a>
+    <a href="sperm.html" class="nav-btn">🧪 凍精訊息</a>
+    <a href="transfer_message.html" class="nav-btn">📦 轉入/輸出</a>
   </div>
 
-  <label for="type">🧫回報類型</label>
-  <select id="type" onchange="toggleFields()">
-    <option>1️⃣D1（D5~D7 冷凍）</option>
-    <option>1️⃣D1（D5~D7 切片＋冷凍）</option>
-    <option>1️⃣D1（D5 植入）</option>
-    <option>3️⃣D3 冷凍（無觀察中）</option>
-    <option>5️⃣D5 冷凍（有觀察中）</option>
-    <option>5️⃣D5 冷凍（無觀察中）</option>
-    <option>5️⃣D5 冷凍（全部仍在觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（有觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（無觀察中）</option>
-    <option>5️⃣D5 切片＋冷凍（全部仍在觀察中）</option>
-    <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
-    <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
-  </select>
+  <div class="card">
+    <label for="type">🧫 回報類型</label>
+    <select id="type" onchange="toggleFields()">
+      <option>1️⃣D1（D5~D7 冷凍）</option>
+      <option>1️⃣D1（D5~D7 切片＋冷凍）</option>
+      <option>1️⃣D1（D5 植入）</option>
+      <option>3️⃣D3 冷凍（無觀察中）</option>
+      <option>5️⃣D5 冷凍（有觀察中）</option>
+      <option>5️⃣D5 冷凍（無觀察中）</option>
+      <option>5️⃣D5 冷凍（全部仍在觀察中）</option>
+      <option>5️⃣D5 切片＋冷凍（有觀察中）</option>
+      <option>5️⃣D5 切片＋冷凍（無觀察中）</option>
+      <option>5️⃣D5 切片＋冷凍（全部仍在觀察中）</option>
+      <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
+      <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
+    </select>
 
-  <label for="name">🆔姓名</label>
-  <input type="text" id="name" />
-  
-  <label for="date">📆今日日期</label>
-  <input type="date" id="date" />
-  
-  <label for="stage">📍今天是</label>
-  <select id="stage">
-    <option value="1">1️⃣D1</option>
-    <option value="3">3️⃣D3</option>
-    <option value="5" selected>5️⃣D5</option>
-    <option value="6">6️⃣D6</option>
-    <option value="7">7️⃣D7</option>
-  </select>
-  
-  <label for="num1">☃️成功受精顆數 或 冷凍顆數（依類型而定）</label>
-  <input type="number" id="num1" min="0" />
-  
-  <div id="biopsyFieldGroup">
-      <label for="num2">🧬切片顆數（僅冷凍含部分切片用）</label>
-      <input type="number" id="num2" min="0" />
+    <label for="name">🆔 姓名</label>
+    <input type="text" id="name" placeholder="請輸入姓名" />
+    
+    <label for="date">📆 今日日期</label>
+    <input type="date" id="date" />
+    
+    <label for="stage">📍 今天是</label>
+    <select id="stage">
+      <option value="1">1️⃣ D1</option>
+      <option value="3">3️⃣ D3</option>
+      <option value="5" selected>5️⃣ D5</option>
+      <option value="6">6️⃣ D6</option>
+      <option value="7">7️⃣ D7</option>
+    </select>
+    
+    <label for="num1">☃️ 成功受精顆數 或 冷凍顆數</label>
+    <input type="number" id="num1" min="0" placeholder="請輸入顆數" />
+    
+    <div id="biopsyFieldGroup">
+        <label for="num2">🧬 切片顆數</label>
+        <input type="number" id="num2" min="0" placeholder="請輸入切片顆數" />
+    </div>
+
+    <div class="btn-group">
+      <button onclick="generateMessage()">⚙️ 產生訊息</button>
+      <button onclick="copyOutput()" style="background-color: #a5d8b9; color: #2d4b38;">✅ 複製訊息</button>
+    </div>
+
+    <div id="output">（訊息將顯示於此）</div>
   </div>
 
-  <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-    <button onclick="generateMessage()">⚙️產生訊息</button>
-    <button onclick="copyOutput()">✅複製訊息</button>
+  <div id="history">
+    <h2 style="font-size: 1.2rem; margin-bottom: 1.2rem; text-align: center; color: #8c6b5d;">⏳ 歷史紀錄</h2>
+    <ul id="historyList"></ul>
+    <button onclick="clearHistory()" style="margin-top: 1.2rem; background-color: #eee; color:#777; width: 100%; padding: 0.6rem;">清除所有紀錄</button>
   </div>
 
-  <div id="output"></div>
   <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
-
-  <div id="history" style="margin-top:2rem; background-color: #f5eee6; padding: 1rem; border-radius: 1rem; border: 1px solid #e0d6cd;">
-    <h2 style="font-size: 1.25rem; margin-bottom: 1rem; text-align: center;">歷史紀錄</h2>
-    <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
-    <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #e4d1bd; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; width: 100%;">清除歷史紀錄</button>
-  </div>
+</div>
 
 <script>
 window.addEventListener('load', () => {
@@ -167,17 +270,12 @@ window.addEventListener('load', () => {
     dateInput.value = `${yyyy}-${mm}-${dd}`;
   }
   loadHistory();
-  
-  // 初始化：頁面載入時先執行一次欄位檢查
   toggleFields();
 });
 
-// 新增功能：根據報胚類型隱藏/顯示「切片顆數」欄位
 function toggleFields() {
     const type = document.getElementById('type').value;
     const biopsyGroup = document.getElementById('biopsyFieldGroup');
-    
-    // 如果類型文字中包含「切片」兩個字，就顯示該欄位，否則隱藏
     if (type.includes('切片')) {
         biopsyGroup.classList.remove('hidden');
     } else {
@@ -203,11 +301,13 @@ function queryDateByStage() {
 
 function generateMessage() {
   const type = document.getElementById('type').value;
-  const name = document.getElementById('name').value;
+  const name = document.getElementById('name').value.trim();
   const date = document.getElementById('date').value;
   const num1 = document.getElementById('num1').value;
   const num2 = document.getElementById('num2').value;
   const stage = document.getElementById('stage').value;
+
+  if(!name) { alert('請記得輸入姓名喔！'); return; }
 
   let message = '';
 
@@ -243,6 +343,10 @@ function generateMessage() {
 
 function copyOutput() {
   const text = document.getElementById('output').textContent;
+  if(!text || text === '（訊息將顯示於此）') {
+      alert('請先產生訊息再複製喔！');
+      return;
+  }
   const hidden = document.getElementById('hiddenCopy');
   hidden.value = text;
   hidden.select();
@@ -252,38 +356,35 @@ function copyOutput() {
 }
 
 function clearHistory() {
-  document.getElementById('historyList').innerHTML = '';
-  localStorage.removeItem('messageHistory');
+  if(confirm('確定要清除所有歷史紀錄嗎？')) {
+      document.getElementById('historyList').innerHTML = '';
+      localStorage.removeItem('messageHistory');
+  }
 }
 
 function addToHistory(msg, fromLoad = false) {
   const historyList = document.getElementById('historyList');
   const li = document.createElement('li');
-  li.style.border = '1px solid #ccc';
-  li.style.padding = '0.5rem';
-  li.style.borderRadius = '0.5rem';
-  li.style.backgroundColor = '#fff8f0';
-  li.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
 
   const messageDiv = document.createElement('div');
   messageDiv.className = 'history-message';
   messageDiv.textContent = msg;
 
   const copyBtn = document.createElement('button');
-  copyBtn.textContent = '複製';
-  copyBtn.style.marginTop = '0.5rem';
+  copyBtn.textContent = '複製此紀錄';
+  copyBtn.style.marginTop = '0';
   copyBtn.style.backgroundColor = '#d8c3a5';
-  copyBtn.style.border = 'none';
-  copyBtn.style.padding = '0.3rem 0.8rem';
-  copyBtn.style.borderRadius = '0.4rem';
-  copyBtn.style.cursor = 'pointer';
+  copyBtn.style.padding = '0.5rem 1rem';
+  copyBtn.style.fontSize = '0.9rem';
+  copyBtn.style.alignSelf = 'flex-end';
+  
   copyBtn.onclick = () => {
     const hidden = document.getElementById('hiddenCopy');
     hidden.value = msg;
     hidden.select();
     document.execCommand("copy");
     hidden.blur();
-    alert("已複製！");
+    alert("已複製紀錄！");
   };
 
   li.appendChild(messageDiv);
