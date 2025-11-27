@@ -26,13 +26,13 @@
       font-size: 1.8rem;
     }
 
-    /* 導航區塊 */
+    /* 導航區塊 - 統一圓潤風格 */
     .nav {
       text-align: center;
       margin-bottom: 2rem;
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       flex-wrap: wrap;
     }
     
@@ -40,18 +40,20 @@
       display: inline-flex;
       align-items: center;
       padding: 8px 14px;
-      background-color: #f3d7c3;
-      color: #5e473a;
-      border-radius: 10px;
+      background-color: #fcefe6; /* 淺米色 */
+      color: #8c6b5d;
+      border-radius: 20px; /* 圓潤邊角 */
       text-decoration: none;
       font-weight: bold;
-      font-size: 0.95em;
+      font-size: 0.9em;
       transition: all 0.3s ease;
+      border: 1px solid transparent;
     }
     
     .nav-btn:hover {
-      background-color: #e5c0a8;
+      background-color: #f3d7c3;
       transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
 
     /* 表單元件 */
@@ -66,9 +68,9 @@
 
     input, select {
       width: 100%;
-      padding: 0.6rem 0.8rem;
-      border-radius: 0.5rem;
-      border: 1px solid #ccc;
+      padding: 0.7rem 0.8rem;
+      border-radius: 0.6rem;
+      border: 2px solid #eee5dd;
       font-size: 1rem;
       background-color: #fff;
       transition: all 0.2s;
@@ -187,7 +189,7 @@
   </select>
 
   <label for="name">🆔 姓名</label>
-  <input type="text" id="name" placeholder="請輸入姓名 (選填)" />
+  <input type="text" id="name" placeholder="請輸入姓名" />
   
   <label for="date">📆 今日日期</label>
   <input type="date" id="date" />
@@ -265,13 +267,11 @@ function queryDateByStage() {
 
 function generateMessage() {
   const type = document.getElementById('type').value;
-  const name = document.getElementById('name').value.trim(); // 取得姓名，但不強制檢查
+  const name = document.getElementById('name').value.trim();
   const date = document.getElementById('date').value;
   const num1 = document.getElementById('num1').value;
   const num2 = document.getElementById('num2').value;
   const stage = document.getElementById('stage').value;
-
-  // 移除了原本的 if(!name) 檢查，現在沒填姓名也能繼續執行
 
   let message = '';
 
