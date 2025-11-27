@@ -6,93 +6,215 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>凍精訊息產生器</title>
   <style>
+    /* 全域設定 - 與其他頁面統一 */
     body {
-      font-family: "Noto Sans TC", sans-serif;
-      font-size: 13px;
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
       background-color: #fdfaf7;
       color: #4b3b30;
-      max-width: 600px;
       margin: 0 auto;
-      padding: 2rem;
+      max-width: 600px;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
     }
+
     h1 {
       text-align: center;
       margin-bottom: 1.5rem;
+      color: #5e473a;
+      font-weight: 800;
+      font-size: 1.8rem;
     }
+
+    /* 導航區塊 */
+    .nav {
+      text-align: center;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: #f3d7c3;
+      color: #5e473a;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background-color: #e5c0a8;
+      transform: translateY(-2px);
+    }
+
+    /* 表單元件 */
     label {
       display: block;
-      margin-top: 1rem;
-      font-weight: bold;
+      margin-top: 1.2rem;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+      color: #6d5648;
+      font-size: 0.95rem;
     }
-    input, select, textarea {
+
+    input, select {
       width: 100%;
-      padding: 0.3rem;
-      margin-top: 0.3rem;
-      border-radius: 0.4rem;
-      border: 1px solid #ccc;
-      font-size: 13px;
-    }
-    button {
-      margin-top: 1rem;
-      background-color: #d8c3a5;
-      border: none;
-      padding: 0.4rem 1rem;
+      padding: 0.6rem 0.8rem;
       border-radius: 0.5rem;
-      font-size: 11px;
-      line-height: 1.6;
-      cursor: pointer;
-      margin-right: 0.5rem;
-      color: #fff;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      background-color: #fff;
+      transition: all 0.2s;
+      box-sizing: border-box;
     }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #d8c3a5;
+      box-shadow: 0 0 0 3px rgba(216, 195, 165, 0.3);
+    }
+
+    /* 數據輸入區塊群組 */
+    .data-group {
+      background-color: #fff;
+      border: 1px solid #eee;
+      padding: 1rem 1.2rem;
+      border-radius: 0.8rem;
+      margin-top: 0.8rem;
+    }
+    
+    .data-group h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      color: #8c6b5d;
+      border-bottom: 2px solid #f3d7c3;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    /* 按鈕樣式 */
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      flex: 1;
+      background-color: #d8c3a5;
+      color: #4b3b30;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background-color: #cbb08e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* 輸出與情境區塊 */
     #output {
       margin-top: 2rem;
-      padding: 1rem;
+      padding: 1.5rem;
       background: #fff;
       border: 1px solid #e0d6cd;
       border-radius: 1rem;
       white-space: pre-wrap;
+      font-size: 0.95rem;
+      color: #333;
     }
+
     .scenario-block {
-      display: none;
-      margin-top: 1rem;
+      display: none; /* 預設隱藏 */
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 歷史紀錄區塊 */
+    #history {
+      margin-top: 3rem;
+      background-color: #f5eee6;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      border: 1px solid #e0d6cd;
+    }
+    
+    .history-message {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    #historyList {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1rem;
+    }
+
+    #historyList li {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background-color: #fff8f0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <h1>🧪凍精訊息產生器</h1>
-    <div class="nav" style="text-align: center; margin-bottom: 1.5rem;">
-    <a href="index.html"style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">🔙 回報胚</a>
-      
-  <a href="rescueICSI.html"
-     style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">🧬 補救受精回報</a>
 
-  <a href="transfer_message.html"
-     style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s; margin-left: 0.5rem;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">📦 轉入｜輸出 回報訊息產生器</a>
-</div>
+  <h1>🧪 凍精訊息產生器</h1>
+  
+  <div class="nav">
+    <a href="index.html" class="nav-btn">🔙 回報胚</a>
+    <a href="rescueICSI.html" class="nav-btn">🧬 補救受精</a>
+    <a href="transfer_message.html" class="nav-btn">📦 轉入/輸出</a>
+  </div>
 
-
-  <label for="scenario">選擇狀況：</label>
+  <label for="scenario">📌 選擇狀況</label>
   <select id="scenario" onchange="switchScenario()">
-    <option value="">---請選擇---</option>
+    <option value="">--- 請選擇 ---</option>
     <option value="s1">個案不在現場等候</option>
     <option value="s2b">個案在現場，二取仍不佳</option>
   </select>
 
-  <label>病歷號：</label>
-  <input type="text" id="caseId" placeholder="12345">
+  <div style="display:flex; gap:1rem;">
+    <div style="flex:1;">
+        <label>🔢 病歷號</label>
+        <input type="text" id="caseId" placeholder="12345">
+    </div>
+    <div style="flex:1;">
+        <label>👤 姓名</label>
+        <input type="text" id="caseName" placeholder="葉大雄">
+    </div>
+  </div>
 
-  <label>姓名：</label>
-  <input type="text" id="caseName" placeholder="葉大雄">
-
-  <label for="doctor">🩺選擇醫師：</label>
+  <label for="doctor">🩺 選擇醫師</label>
   <select id="doctor">
-    <option value="">---請選擇---</option>
+    <option value="">--- 請選擇 ---</option>
     <option value="陳醫師">陳醫師</option>
     <option value="廖院">廖院</option>
     <option value="詹醫師">詹醫師</option>
@@ -107,43 +229,62 @@
     <option value="洪醫師">洪醫師</option>
     <option value="自填">其他（自填）</option>
   </select>
-  <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none;">
+  <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none; margin-top:0.5rem;">
 
-  <!-- 情境 1 -->
   <div id="scenario1" class="scenario-block">
-    <h3>檢體數據</h3>
-    <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
-    <label>Concentration (M)：<input type="number" id="conc1"></label>
-    <label>PR (%)：<input type="number" id="PR1"></label>
-    <label>冷凍管數：<input type="number" id="tubes1"></label>
-
-    <button onclick="generateDoctor1()">🩺產生醫師訊息</button>
-    <button onclick="generatePatient1()">👤產生個案訊息</button>
+    <div class="data-group">
+        <h3>🔬 檢體數據</h3>
+        <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
+        <label>Concentration (M)：<input type="number" id="conc1"></label>
+        <label>PR (%)：<input type="number" id="PR1"></label>
+        <label>❄️ 冷凍管數：<input type="number" id="tubes1"></label>
+    </div>
+    <div class="btn-group">
+        <button onclick="generateDoctor1()">🩺 產生醫師訊息</button>
+        <button onclick="generatePatient1()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
+    </div>
   </div>
 
-  <!-- 情境 2B -->
   <div id="scenario2b" class="scenario-block">
-    <h3>第一次檢體</h3>
-    <label>Volume (ml)：<input type="number" id="volume21" step="0.1"></label>
-    <label>Concentration (M)：<input type="number" id="conc21"></label>
-    <label>PR (%)：<input type="number" id="PR21"></label>
+    <div class="data-group">
+        <h3>🔬 第一次檢體</h3>
+        <label>Volume (ml)：<input type="number" id="volume21" step="0.1"></label>
+        <label>Concentration (M)：<input type="number" id="conc21"></label>
+        <label>PR (%)：<input type="number" id="PR21"></label>
+    </div>
 
-    <h3>第二次檢體</h3>
-    <label>Volume (ml)：<input type="number" id="volume22" step="0.1"></label>
-    <label>Concentration (M)：<input type="number" id="conc22"></label>
-    <label>PR (%)：<input type="number" id="PR22"></label>
+    <div class="data-group">
+        <h3>🔬 第二次檢體</h3>
+        <label>Volume (ml)：<input type="number" id="volume22" step="0.1"></label>
+        <label>Concentration (M)：<input type="number" id="conc22"></label>
+        <label>PR (%)：<input type="number" id="PR22"></label>
+    </div>
+    
+    <label>❄️ 冷凍管數：</label>
+    <input type="number" id="tubes2">
 
-    <label>冷凍管數：<input type="number" id="tubes2"></label>
-
-    <button onclick="generateDoctor2B()">⚙️產生醫師訊息</button>
-    <button onclick="generatePatient2B()">⚙️產生個案訊息</button>
+    <div class="btn-group">
+        <button onclick="generateDoctor2B()">🩺 產生醫師訊息</button>
+        <button onclick="generatePatient2B()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
+    </div>
   </div>
 
-  <button onclick="copyMessage()">✅複製訊息</button>
+  <button onclick="copyMessage()" style="margin-top: 1.5rem; background-color: #a5d8b9; color: #2d4b38; width:100%;">✅ 複製訊息</button>
 
   <div id="output"></div>
 
-  <script>
+  <div id="history">
+    <h2 style="font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">⏳ 歷史紀錄</h2>
+    <ul id="historyList"></ul>
+    <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #eee; width: 100%;">清除所有紀錄</button>
+  </div>
+
+  <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
+
+<script>
+    // 初始化：載入歷史紀錄
+    window.addEventListener('load', loadHistory);
+
     document.getElementById("doctor").addEventListener("change", function() {
       let custom = document.getElementById("doctorCustom");
       custom.style.display = (this.value === "自填") ? "block" : "none";
@@ -186,7 +327,7 @@ ${abnormalities.join("\n")}
 由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n
 建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。\n`;
 
-      document.getElementById("output").innerText = message;
+      displayAndSave(message);
     }
 
     function generatePatient1() {
@@ -211,7 +352,7 @@ ${abnormalities.join("\n")}
 此次凍精的檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
-      document.getElementById("output").innerText = message;
+      displayAndSave(message);
     }
 
     // === 情境 2B ===
@@ -240,7 +381,7 @@ ${abnormalities.join("\n")}
 實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n
 建議可請個案擇日安排再次凍精，或於受精療程當天使用新鮮精蟲。`;
 
-      document.getElementById("output").innerText = message;
+      displayAndSave(message);
     }
 
     function generatePatient2B() {
@@ -263,7 +404,13 @@ ${abnormalities.join("\n")}
 此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n
 謝謝您。`;
 
-      document.getElementById("output").innerText = message;
+      displayAndSave(message);
+    }
+
+    // === 顯示並儲存功能 ===
+    function displayAndSave(msg) {
+        document.getElementById("output").innerText = msg;
+        addToHistory(msg);
     }
 
     // === 複製 ===
@@ -273,9 +420,66 @@ ${abnormalities.join("\n")}
         alert("目前沒有需要複製的訊息");
         return;
       }
-      navigator.clipboard.writeText(text).then(() => {
-        alert("訊息已複製");
-      });
+      
+      const hidden = document.getElementById("hiddenCopy");
+      hidden.value = text;
+      hidden.select();
+      document.execCommand("copy");
+      hidden.blur();
+      alert("訊息已複製");
+    }
+
+    // === 歷史紀錄邏輯 (與其他頁面相同) ===
+    function addToHistory(msg, fromLoad = false) {
+      const historyList = document.getElementById('historyList');
+      const li = document.createElement('li');
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'history-message';
+      messageDiv.textContent = msg;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = '複製此紀錄';
+      copyBtn.style.marginTop = '0';
+      copyBtn.style.backgroundColor = '#d8c3a5';
+      copyBtn.style.padding = '0.4rem 0.8rem';
+      copyBtn.style.fontSize = '0.85rem';
+      copyBtn.style.alignSelf = 'flex-end';
+      
+      copyBtn.onclick = () => {
+        const hidden = document.getElementById('hiddenCopy');
+        hidden.value = msg;
+        hidden.select();
+        document.execCommand("copy");
+        hidden.blur();
+        alert("已複製紀錄！");
+      };
+
+      li.appendChild(messageDiv);
+      li.appendChild(copyBtn);
+      historyList.prepend(li);
+
+      if (!fromLoad) saveHistory();
+    }
+
+    function saveHistory() {
+      const items = [...document.querySelectorAll('#historyList .history-message')].map(div => div.textContent);
+      localStorage.setItem('spermMessageHistory', JSON.stringify(items));
+    }
+
+    function loadHistory() {
+      const data = localStorage.getItem('spermMessageHistory');
+      if (data) {
+        const messages = JSON.parse(data);
+        messages.reverse().forEach(msg => addToHistory(msg, true));
+      }
+    }
+
+    function clearHistory() {
+      if(confirm('確定要清除此頁面的歷史紀錄嗎？')) {
+          document.getElementById('historyList').innerHTML = '';
+          localStorage.removeItem('spermMessageHistory');
+      }
     }
   </script>
 </body>
