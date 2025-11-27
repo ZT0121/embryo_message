@@ -1,398 +1,596 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>轉入｜輸出 回報訊息產生器</title>
-<link rel="icon" href="./favicon.png">
-<style>
-:root{
-  --bg:#fdfaf7; --ink:#4b3b30; --muted:#7b675a; --line:#e0d6cd;
-  --card:#ffffff; --shadow:0 4px 16px rgba(0,0,0,.05);
-  --brand:#d8c3a5; --brand-2:#c9b49a; --brand-3:#bfa78a;
-  --brand-soft:#f3d7c3; --brand-hover:#e5c0a8;
-  --ok:#6da87b; --ok-2:#5e9470; --warn:#b58b5c; --warn-2:#9e7649;
-}
-/* 基本 */
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);min-height:100%;color:var(--ink);font-family:"Noto Sans TC",system-ui}
-header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:20}
-.h-inner{max-width:1000px;margin:auto;display:flex;align-items:center;gap:10px;padding:12px 16px}
-.logo{width:28px;height:28px;border-radius:8px;background:#fff url('./favicon.png') center/cover no-repeat;border:1px solid var(--line)}
-h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.2px}
-.badge{font-size:12px;color:var(--muted);background:var(--brand-soft);border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>轉入｜輸出 回報訊息產生器</title>
+  <style>
+    /* 全域設定 - 與其他頁面統一 */
+    :root {
+      --bg: #fdfaf7;
+      --text: #4b3b30;
+      --text-light: #6d5648;
+      --primary: #d8c3a5;
+      --primary-hover: #cbb08e;
+      --secondary: #f3d7c3;
+      --border: #e0d6cd;
+      --white: #ffffff;
+      --success: #a5d8b9;
+      --success-text: #2d4b38;
+      --danger: #eebbbb;
+      --danger-text: #5e3a3a;
+    }
 
-/* 版面 */
-main{max-width:1000px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:1024px){main{grid-template-columns:260px 1fr;gap:16px}}
-.nav{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:var(--shadow)}
-.tab{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;color:var(--ink);padding:12px 14px;border-radius:12px;margin:8px 0;font-weight:700;cursor:pointer;transition:.15s}
-.tab:hover{border-color:#dfcab6;background:var(--brand-soft)}
-.tab.active{outline:2px solid rgba(216,195,165,.35);border-color:var(--brand-3);background:var(--brand-soft)}
-.panel{display:none}.panel.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
-.section{padding:16px}.section+.section{border-top:1px dashed var(--line)}
-.grid{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:900px){.grid{grid-template-columns:repeat(12,1fr)}}
-.col-4{grid-column:span 12}@media(min-width:900px){.col-4{grid-column:span 4}}
-.col-12{grid-column:span 12}
+    body {
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0 auto;
+      max-width: 800px; /* 這裡設寬一點因為有表格 */
+      padding: 2rem 1rem;
+      line-height: 1.6;
+    }
 
-/* 表單與按鈕 */
-label{display:block;font-size:13px;color:var(--muted);margin:2px 2px 6px}
-input,select,textarea{
-  width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);
-  background:#fff;color:var(--ink);outline:2px solid transparent;outline-offset:2px;
-  transition:outline .15s,border .15s,box-shadow .15s
-}
-input:focus,select:focus,textarea:focus{outline:2px solid rgba(216,195,165,.4);border-color:var(--brand-3);box-shadow:0 0 0 3px rgba(216,195,165,.18)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.btn{
-  appearance:none;border:1px solid var(--brand-3);
-  background:linear-gradient(180deg,var(--brand),var(--brand-2));
-  color:#5e473a;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;
-  transition:transform .06s,box-shadow .15s,filter .15s;
-  box-shadow:0 4px 14px rgba(139,96,64,.12),inset 0 1px 0 rgba(255,255,255,.4)
-}
-.btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
-.btn:active{transform:translateY(0)}
-.btn.ok{background:linear-gradient(180deg,var(--ok),var(--ok-2));border-color:#547e63;color:#fff;box-shadow:0 4px 14px rgba(109,168,123,.18)}
-.btn.warn{background:linear-gradient(180deg,var(--warn),var(--warn-2));border-color:#88633f;color:#fff;box-shadow:0 4px 14px rgba(181,139,92,.18)}
+    /* 標題與 Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    h1 {
+      margin: 0 0 0.5rem 0;
+      color: #5e473a;
+      font-weight: 800;
+      font-size: 1.8rem;
+    }
+    
+    .badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      background: var(--secondary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
 
-/* 輸出與表格 */
-.output{min-height:160px;white-space:pre-wrap;background:#fff;border:1px dashed var(--line);border-radius:14px;padding:14px;color:var(--ink)}
-.hr{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);border:none;margin:10px 0}
-.table{width:100%;border-collapse:separate;border-spacing:0 8px}
-.table th,.table td{padding:8px;border:1px solid var(--line);background:#fff}
-.table th{background:#fff8f0;font-size:12px;color:var(--muted)}
-.table td input{width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink)}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    /* 導航區塊 */
+    .nav-top {
+      text-align: center;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: var(--secondary);
+      color: #5e473a;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+    }
 
-/* 名冊 Modal（亮色） */
-#rosterModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.12);z-index:1000;align-items:center;justify-content:center}
-#rosterModal .sheet{width:min(680px,92vw);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.08);padding:16px}
-#rosterModal h3{margin:0 0 8px 0;font-size:16px;color:var(--ink)}
-#rosterModal .small{margin-bottom:8px;color:var(--muted)}
-#rosterText{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
-</style>
+    /* 主內容區塊 */
+    main {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(216, 195, 165, 0.15);
+    }
+
+    /* 內部頁籤 (Tab) */
+    .tab-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 1rem;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text-light);
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    
+    .tab-btn:hover {
+      background: var(--bg);
+    }
+    
+    .tab-btn.active {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: var(--text);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
+
+    /* 表單元件 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 0.6rem;
+      border: 2px solid #eee5dd;
+      font-size: 1rem;
+      background-color: #fdfdfd;
+      transition: all 0.2s;
+      box-sizing: border-box;
+      color: var(--text);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(216, 195, 165, 0.2);
+      background-color: #fff;
+    }
+
+    /* 表格樣式 */
+    .table-container {
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    
+    th {
+      text-align: left;
+      padding: 0.5rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    td {
+      padding: 0.5rem 0;
+    }
+
+    /* 按鈕群組 */
+    .btn-row {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 0.6rem;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary { background-color: var(--primary); color: var(--text); }
+    .btn-success { background-color: var(--success); color: var(--success-text); }
+    .btn-danger { background-color: var(--danger); color: var(--danger-text); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-light); }
+
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+
+    /* 輸出區塊 */
+    .output-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #faf7f5;
+      border: 2px dashed var(--border);
+      border-radius: 1rem;
+      white-space: pre-wrap;
+      color: #333;
+      min-height: 100px;
+    }
+
+    /* Modal (名冊) */
+    #rosterModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+    
+    .modal-content {
+      background: var(--white);
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    
+    .modal-content h3 { margin-top: 0; color: var(--text); }
+
+    /* Toast 提示 */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      z-index: 9999;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+  </style>
 </head>
 <body>
+
 <header>
-  <div class="h-inner">
-    <div class="logo" aria-hidden="true"></div>
-    <h1>轉入｜輸出 回報訊息產生器</h1>
-    <span class="badge">醫師與個案訊息模板</span>
-  </div>
+  <h1>轉入｜輸出 回報訊息</h1>
+  <span class="badge">醫師與個案訊息模板</span>
 </header>
 
-  <div class="nav" style="text-align: center; margin-bottom: 1.5rem;">
-  <a href="index.html"
-     style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">📜 回報胚訊息</a>
-
-  <a href="rescueICSI.html"
-     style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s; margin-left: 0.5rem;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">🧬 補救受精回報</a>
-
-  <a href="sperm.html"
-     style="display: inline-block; padding: 10px 16px; background-color: #f3d7c3; color: #5e473a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.95em; transition: background-color 0.3s; margin-left: 0.5rem;"
-     onmouseover="this.style.backgroundColor='#e5c0a8'"
-     onmouseout="this.style.backgroundColor='#f3d7c3'">🧪 凍精訊息產生器</a>
+<div class="nav-top">
+  <a href="index.html" class="nav-btn">🔙 回報胚</a>
+  <a href="rescueICSI.html" class="nav-btn">🧬 補救受精</a>
+  <a href="sperm.html" class="nav-btn">🧪 凍精訊息</a>
 </div>
 
-  
 <main>
-  <nav class="nav">
-    <button class="tab active" data-target="panel-doctor">① 醫師通知</button>
-    <button class="tab" data-target="panel-case">② 個案通知</button>
-  </nav>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('panel-doctor')">👨‍⚕️ 醫師通知</button>
+    <button class="tab-btn" onclick="switchTab('panel-case')">👤 個案通知</button>
+  </div>
 
-  <section>
-    <!-- 醫師通知 -->
-    <div class="panel active" id="panel-doctor">
-      <div class="card">
-        <div class="section">
-          <div class="grid">
-            <div class="col-4">
-              <label>模板</label>
-              <select id="tplDoc">
-                <option value="doc_single">轉移完成通知｜單筆</option>
-                <option value="doc_group">團轉入完成通知｜多筆</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <label>轉入種類</label>
-              <select id="docType">
-                <option value="胚胎">胚胎</option>
-                <option value="卵子">卵子</option>
-                <option value="凍精">凍精</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <label>醫師 <button id="btnRoster" type="button" class="btn" style="margin-left:6px;padding:4px 8px">名冊</button></label>
-              <input id="doctorName" placeholder="例：陳醫師" list="doctorList">
-              <datalist id="doctorList"></datalist>
-            </div>
-
-            <!-- 單筆：分欄 -->
-            <div class="col-4 only doc_single">
-              <label>病歷號</label>
-              <input id="caseNo" placeholder="12345">
-            </div>
-            <div class="col-4 only doc_single">
-              <label>姓名</label>
-              <input id="caseName" placeholder="宜靜">
-            </div>
-            <div class="col-4 only doc_single"></div>
-
-            <!-- 多筆：表格 -->
-            <div class="col-12 only doc_group">
-              <label>多筆個案（病歷號＋姓名）</label>
-              <table class="table" id="groupTable">
-                <thead>
-                  <tr><th style="width:30%">病歷號</th><th style="width:50%">姓名</th><th style="width:20%">操作</th></tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-              <div class="row">
-                <button class="btn" id="addRow">新增一列</button>
-                <button class="btn warn" id="clearRows">清空表格</button>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="row">
-                <button class="btn" id="genDoc">產生訊息</button>
-                <button class="btn ok" id="copyDoc">複製</button>
-                <button class="btn warn" id="clearDoc">清空</button>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="hr"></div>
-              <div id="outDoc" class="output mono"></div>
-            </div>
-          </div>
-        </div>
+  <div id="panel-doctor" class="panel active">
+    <div class="grid">
+      <div>
+        <label>📄 模板類型</label>
+        <select id="tplDoc" onchange="toggleDocFields()">
+          <option value="doc_single">轉移完成通知｜單筆</option>
+          <option value="doc_group">團轉入完成通知｜多筆</option>
+        </select>
+      </div>
+      <div>
+        <label>📦 轉入種類</label>
+        <select id="docType">
+          <option value="胚胎">胚胎</option>
+          <option value="卵子">卵子</option>
+          <option value="凍精">凍精</option>
+        </select>
+      </div>
+      <div>
+        <label>🩺 醫師 <button onclick="openRoster()" class="btn btn-outline btn-sm" style="margin-left:5px">名冊</button></label>
+        <input id="doctorName" placeholder="例：陳醫師" list="doctorList">
+        <datalist id="doctorList"></datalist>
       </div>
     </div>
 
-    <!-- 個案通知 -->
-    <div class="panel" id="panel-case">
-      <div class="card">
-        <div class="section">
-          <div class="grid">
-            <div class="col-4">
-              <label>模板</label>
-              <select id="tplCase">
-                <option value="pt_import">通知轉胚完成</option>
-                <option value="pt_export">通知輸出已完成提領</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <label>個案稱呼</label>
-              <input id="ptName" placeholder="名字">
-            </div>
-            <div class="col-4">
-              <label>類型</label>
-              <select id="ptType">
-                <option value="卵子">卵子</option>
-                <option value="胚胎">胚胎</option>
-                <option value="凍精">凍精</option>
-              </select>
-            </div>
-
-            <div class="col-12">
-              <div class="row">
-                <button class="btn" id="genPt">產生訊息</button>
-                <button class="btn ok" id="copyPt">複製</button>
-                <button class="btn warn" id="clearPt">清空</button>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="hr"></div>
-              <div id="outPt" class="output mono"></div>
-            </div>
-          </div>
-        </div>
+    <div id="single-fields" class="grid">
+      <div>
+        <label>🔢 病歷號</label>
+        <input id="caseNo" placeholder="12345">
+      </div>
+      <div>
+        <label>👤 姓名</label>
+        <input id="caseName" placeholder="宜靜">
       </div>
     </div>
 
-  </section>
+    <div id="group-fields" style="display:none;">
+      <label>📋 多筆個案列表</label>
+      <div class="table-container">
+        <table id="groupTable">
+          <thead>
+            <tr>
+              <th width="35%">病歷號</th>
+              <th width="45%">姓名</th>
+              <th width="20%"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="btn-row" style="margin-top:0.5rem; justify-content: flex-start;">
+        <button class="btn btn-outline btn-sm" onclick="addRow()">+ 新增一列</button>
+        <button class="btn btn-outline btn-sm" onclick="clearRows()" style="color:var(--danger-text)">清空表格</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="genDoc()">⚙️ 產生訊息</button>
+      <button class="btn btn-success" onclick="copyText('outDoc')">✅ 複製</button>
+      <button class="btn btn-danger" onclick="clearDoc()">🗑️ 清空</button>
+    </div>
+
+    <div id="outDoc" class="output-box"></div>
+  </div>
+
+  <div id="panel-case" class="panel">
+    <div class="grid">
+      <div>
+        <label>📄 模板類型</label>
+        <select id="tplCase">
+          <option value="pt_import">通知轉胚完成</option>
+          <option value="pt_export">通知輸出已完成提領</option>
+        </select>
+      </div>
+      <div>
+        <label>👤 個案稱呼</label>
+        <input id="ptName" placeholder="名字">
+      </div>
+      <div>
+        <label>📦 類型</label>
+        <select id="ptType">
+          <option value="卵子">卵子</option>
+          <option value="胚胎">胚胎</option>
+          <option value="凍精">凍精</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="genPt()">⚙️ 產生訊息</button>
+      <button class="btn btn-success" onclick="copyText('outPt')">✅ 複製</button>
+      <button class="btn btn-danger" onclick="clearPt()">🗑️ 清空</button>
+    </div>
+
+    <div id="outPt" class="output-box"></div>
+  </div>
+
 </main>
 
-<!-- 名冊設定（亮色） -->
 <div id="rosterModal">
-  <div class="sheet">
-    <h3>醫師名冊</h3>
-    <div class="small">一行一位醫師，可自由修改。</div>
-    <textarea id="rosterText" rows="10"></textarea>
-    <div class="row" style="margin-top:10px">
-      <button id="saveRoster" class="btn ok">儲存</button>
-      <button id="clearRoster" class="btn warn">清空</button>
-      <button id="closeRoster" class="btn" style="background:var(--brand-soft);border-color:var(--line)">關閉</button>
+  <div class="modal-content">
+    <h3>📝 編輯醫師名冊</h3>
+    <p style="color:#666; font-size:0.9rem; margin-bottom:10px;">一行輸入一位醫師姓名。</p>
+    <textarea id="rosterText" rows="8"></textarea>
+    <div class="btn-row" style="margin-top:1.5rem">
+      <button class="btn btn-primary" onclick="saveRoster()">儲存</button>
+      <button class="btn btn-outline" onclick="closeRoster()">取消</button>
     </div>
   </div>
 </div>
+
+<div id="toast" class="toast">訊息已複製</div>
 
 <script>
 /* ===== 工具 ===== */
-const $=id=>document.getElementById(id);
-function toast(msg){
-  const t=document.createElement('div');t.textContent=msg;
-  Object.assign(t.style,{position:'fixed',left:'50%',top:'16px',transform:'translateX(-50%)',
-    background:'var(--brand)',border:'1px solid var(--brand-3)',padding:'10px 14px',color:'#5e473a',
-    borderRadius:'10px',zIndex:9999,boxShadow:'0 6px 18px rgba(139,96,64,.18)'});document.body.appendChild(t);
-  setTimeout(()=>t.remove(),1100)
+const $ = id => document.getElementById(id);
+const toastEl = $('toast');
+
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  setTimeout(() => toastEl.classList.remove('show'), 1500);
 }
 
-/* ===== 左側分頁 ===== */
-document.querySelectorAll('.tab').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    $(btn.dataset.target).classList.add('active');
-  };
-});
+function switchTab(targetId) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  
+  $(targetId).classList.add('active');
+  // 找出對應的按鈕加 active
+  const btns = document.querySelectorAll('.tab-btn');
+  if(targetId === 'panel-doctor') btns[0].classList.add('active');
+  else btns[1].classList.add('active');
+}
 
-/* ===== 醫師名冊（localStorage） ===== */
-(function initDefaultRoster(){
-  const KEY='NUWA_DOCTOR_ROSTER';
-  if(!localStorage.getItem(KEY)){
-    const list=["陳醫師","廖醫師","沈醫師","詹醫師","張醫師","王醫師","林醫師","劉醫師","朱醫師","吳醫師","何醫師","洪醫師","李醫師"];
-    localStorage.setItem(KEY, JSON.stringify(list));
+/* ===== 醫師名冊邏輯 ===== */
+const ROSTER_KEY = 'NUWA_DOCTOR_ROSTER';
+const RECENT_KEY = 'NUWA_DOCTOR_RECENT';
+
+function getList(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+}
+
+function initRoster() {
+  if (!localStorage.getItem(ROSTER_KEY)) {
+    const defaults = ["陳醫師", "廖醫師", "沈醫師", "詹醫師", "張醫師", "王醫師", "林醫師", "劉醫師", "朱醫師", "吳醫師", "何醫師", "洪醫師", "李醫師"];
+    localStorage.setItem(ROSTER_KEY, JSON.stringify(defaults));
   }
-})();
-const STORAGE_ROSTER='NUWA_DOCTOR_ROSTER';
-const STORAGE_RECENT='NUWA_DOCTOR_RECENT';
-function loadRoster(){try{return JSON.parse(localStorage.getItem(STORAGE_ROSTER)||'[]')}catch{return[]}}
-function saveRoster(list){localStorage.setItem(STORAGE_ROSTER, JSON.stringify(list))}
-function loadRecent(){try{return JSON.parse(localStorage.getItem(STORAGE_RECENT)||'[]')}catch{return[]}}
-function pushRecent(name){if(!name) return; const list=loadRecent().filter(x=>x!==name); list.unshift(name); if(list.length>12) list.length=12; localStorage.setItem(STORAGE_RECENT, JSON.stringify(list))}
-function refreshDoctorOptions(){
-  const dl=$('doctorList'); if(!dl) return;
-  const roster=loadRoster(), recent=loadRecent(), seen=new Set();
-  const order=[...recent,...roster].filter(Boolean).filter(n=>{if(seen.has(n)) return false; seen.add(n); return true});
-  dl.innerHTML=''; order.forEach(n=>{const opt=document.createElement('option'); opt.value=n; dl.appendChild(opt);});
-}
-(function setupRosterUI(){
-  const btn=$('btnRoster'),modal=$('rosterModal'),txt=$('rosterText');
-  $('closeRoster').onclick=()=>modal.style.display='none';
-  btn.onclick=()=>{txt.value=loadRoster().join('\n'); modal.style.display='flex';};
-  $('saveRoster').onclick=()=>{const lines=txt.value.split('\n').map(s=>s.trim()).filter(Boolean); const uniq=[...new Set(lines)]; saveRoster(uniq); refreshDoctorOptions(); toast('名冊已儲存')};
-  $('clearRoster').onclick=()=>{saveRoster([]); txt.value=''; refreshDoctorOptions(); toast('名冊已清空')};
-  refreshDoctorOptions();
-})();
-
-/* ===== 病歷號：自動 # 前綴 ===== */
-function withHash(v){v=String(v||'').trim(); if(!v) return ''; return v.startsWith('#')?v:'#'+v;}
-function bindHashInput(input){
-  if(!input) return;
-  input.addEventListener('blur',()=>{input.value=withHash(input.value.replace(/\s+/g,''))});
-  input.addEventListener('input',()=>{ if(/^#?\d*$/.test(input.value)) return; input.value=input.value.replace(/[^#\d]/g,''); });
+  refreshDatalist();
 }
 
-/* ===== 醫師：多筆表格 ===== */
-const groupTableBody = document.querySelector('#groupTable tbody');
-function addRow(no='',name=''){
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input class="no" placeholder="12345" value="${no?String(no).replace(/^#/,''):''}"></td>
-                <td><input class="nm" placeholder="宜靜" value="${name||''}"></td>
-                <td><button class="btn warn del">刪除</button></td>`;
-  groupTableBody.appendChild(tr);
-  const noInput=tr.querySelector('.no'); bindHashInput(noInput);
-  tr.querySelector('.del').onclick=()=>tr.remove();
+function refreshDatalist() {
+  const roster = getList(ROSTER_KEY);
+  const recent = getList(RECENT_KEY);
+  const unique = [...new Set([...recent, ...roster])]; // 最近使用的排前面
+  
+  const dl = $('doctorList');
+  dl.innerHTML = '';
+  unique.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    dl.appendChild(opt);
+  });
 }
-$('addRow').onclick=()=>addRow();
-$('clearRows').onclick=()=>{groupTableBody.innerHTML='';};
-addRow(); addRow();
 
-/* ===== 醫師：單筆欄位 ===== */
-bindHashInput($('caseNo'));
-
-/* ===== 醫師：產出與複製 ===== */
-const D={
-  tpl:$('tplDoc'), type:$('docType'), doctor:$('doctorName'),
-  caseNo:$('caseNo'), caseName:$('caseName'),
-  out:$('outDoc'), gen:$('genDoc'), copy:$('copyDoc'), clear:$('clearDoc')
-};
-
-function buildDocSingle(){
-  const doctor=(D.doctor.value||'O醫師').trim(); /* 如要留空改成 '' */
-  const no=withHash(D.caseNo.value);
-  const name=(D.caseName.value||'姓名').trim();
-  const t=D.type.value;
-  return `${doctor}，午安
-通知您，${no} ${name} 的${t}已完成轉入實驗室作業，謝謝您。`;
+function saveRecent(name) {
+  if(!name) return;
+  let list = getList(RECENT_KEY).filter(n => n !== name);
+  list.unshift(name);
+  if(list.length > 10) list = list.slice(0, 10);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+  refreshDatalist();
 }
-function buildDocGroup(){
-  const doctor=(D.doctor.value||'').trim();
-  const t=D.type.value;
-  const rows=[...groupTableBody.querySelectorAll('tr')].map(tr=>{
-    const no=withHash(tr.querySelector('.no').value);
-    const nm=(tr.querySelector('.nm').value||'姓名').trim();
-    if(!no && !nm) return '';
-    return `${no||'#?????'} ${nm}`;
-  }).filter(Boolean);
-  const list=rows.length?rows.join('\n'):'#12345 姓名\n#23456 姓名';
-  return `${doctor}您好，今日已順利完成${t}轉移的個案有：
-${list}
 
-謝謝您🙏`;
+/* Modal 操作 */
+function openRoster() {
+  $('rosterText').value = getList(ROSTER_KEY).join('\n');
+  $('rosterModal').style.display = 'flex';
 }
-function buildDoc(){ return D.tpl.value==='doc_single' ? buildDocSingle() : buildDocGroup(); }
+function closeRoster() { $('rosterModal').style.display = 'none'; }
+function saveRoster() {
+  const text = $('rosterText').value;
+  const list = text.split('\n').map(s => s.trim()).filter(Boolean);
+  localStorage.setItem(ROSTER_KEY, JSON.stringify([...new Set(list)]));
+  refreshDatalist();
+  closeRoster();
+  showToast('名冊已更新');
+}
 
-function copyText(el){const t=el.textContent.trim(); if(!t) return; navigator.clipboard.writeText(t).then(()=>toast('已複製'));}
+/* ===== 輸入處理 (#字號) ===== */
+function formatHash(input) {
+  let v = input.value.trim();
+  if(v && !v.startsWith('#')) input.value = '#' + v;
+}
 
-D.gen.onclick=()=>{D.out.textContent=buildDoc(); pushRecent(D.doctor.value.trim()); refreshDoctorOptions();};
-D.copy.onclick=()=>copyText(D.out);
-D.clear.onclick=()=>{
-  ['doctor','caseNo','caseName'].forEach(k=>{const el=$(k); if(el) el.value='';});
-  groupTableBody.innerHTML=''; addRow(); addRow();
-  D.out.textContent=''; toast('已清空');
-};
-$('tplDoc').addEventListener('change',()=>{
-  document.querySelectorAll('.only').forEach(n=>n.style.display='none');
-  document.querySelectorAll('.only.'+D.tpl.value).forEach(n=>n.style.display='');
-});
-document.getElementById('tplDoc').dispatchEvent(new Event('change'));
+$('caseNo').addEventListener('blur', function() { formatHash(this); });
 
-/* ===== 個案通知 ===== */
-const P={tpl:$('tplCase'),name:$('ptName'),type:$('ptType'),
-  out:$('outPt'),gen:$('genPt'),copy:$('copyPt'),clear:$('clearPt')};
+/* ===== 醫師通知邏輯 ===== */
+const groupTbody = document.querySelector('#groupTable tbody');
 
-function buildPt(){
-  const name=(P.name.value||'名字').trim();
-  const type=P.type.value;
-  if(P.tpl.value==='pt_import'){
-    return `${name} 您好，
-您的 ${type} 已於今日順利轉入 禾馨宜蘊生殖中心（台北院區）。
-相關詳細資訊可透過 App 查詢。
-此訊息以 LINE 傳送，方便您後續療程的安排，謝謝您。`;
+function toggleDocFields() {
+  const mode = $('tplDoc').value;
+  if (mode === 'doc_single') {
+    $('single-fields').style.display = 'grid';
+    $('group-fields').style.display = 'none';
+  } else {
+    $('single-fields').style.display = 'none';
+    $('group-fields').style.display = 'block';
+    if(groupTbody.children.length === 0) { addRow(); addRow(); }
   }
-  return `${name} 您好，通知您的 ${type} 已經完成提領進行運輸，謝謝您。`;
 }
-P.gen.onclick=()=>{P.out.textContent=buildPt();};
-P.copy.onclick=()=>{const t=P.out.textContent.trim(); if(!t) return; navigator.clipboard.writeText(t).then(()=>toast('已複製'));};
-P.clear.onclick=()=>{['ptName'].forEach(k=>{const el=$(k); if(el) el.value='';}); P.type.value='卵子'; P.out.textContent=''; toast('已清空');};
 
-/* ===== 快捷鍵 ===== */
-document.addEventListener('keydown',(e)=>{
-  const isMac=navigator.platform.toUpperCase().includes('MAC');
-  const meta=isMac?e.metaKey:e.ctrlKey;
-  if(meta && e.key==='Enter'){
-    e.preventDefault();
-    if($('panel-doctor').classList.contains('active')) $('genDoc').click();
-    else $('genPt').click();
+function addRow() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input class="no-input" placeholder="12345"></td>
+    <td><input class="nm-input" placeholder="姓名"></td>
+    <td><button class="btn btn-outline btn-sm" onclick="this.closest('tr').remove()" style="border:none;color:#999">❌</button></td>
+  `;
+  groupTbody.appendChild(tr);
+  // 綁定 # 字號事件
+  tr.querySelector('.no-input').addEventListener('blur', function() { formatHash(this); });
+}
+
+function clearRows() {
+  groupTbody.innerHTML = '';
+  addRow();
+}
+
+function genDoc() {
+  const mode = $('tplDoc').value;
+  const type = $('docType').value;
+  const doctor = $('doctorName').value.trim() || '醫師';
+  
+  if (doctor) saveRecent(doctor);
+
+  let msg = '';
+  if (mode === 'doc_single') {
+    const no = $('caseNo').value.trim() || '#_____';
+    const name = $('caseName').value.trim() || '姓名';
+    msg = `${doctor}，午安\n通知您，${no} ${name} 的${type}已完成轉入實驗室作業，謝謝您。`;
+  } else {
+    const rows = [...groupTbody.querySelectorAll('tr')];
+    let list = [];
+    rows.forEach(tr => {
+      const no = tr.querySelector('.no-input').value.trim();
+      const nm = tr.querySelector('.nm-input').value.trim();
+      if(no || nm) list.push(`${no || '#_____'} ${nm}`);
+    });
+    
+    if(list.length === 0) list = ['#12345 範例姓名'];
+    
+    msg = `${doctor}您好，今日已順利完成${type}轉移的個案有：\n${list.join('\n')}\n\n謝謝您🙏`;
   }
-  if(meta && e.key.toLowerCase()==='c' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
-    e.preventDefault();
-    if($('panel-doctor').classList.contains('active')) $('copyDoc').click();
-    else $('copyPt').click();
+  
+  $('outDoc').textContent = msg;
+}
+
+function clearDoc() {
+  $('doctorName').value = '';
+  $('caseNo').value = '';
+  $('caseName').value = '';
+  clearRows();
+  $('outDoc').textContent = '';
+}
+
+/* ===== 個案通知邏輯 ===== */
+function genPt() {
+  const mode = $('tplCase').value;
+  const name = $('ptName').value.trim() || '名字';
+  const type = $('ptType').value;
+  
+  let msg = '';
+  if (mode === 'pt_import') {
+    msg = `${name} 您好，\n您的 ${type} 已於今日順利轉入 禾馨宜蘊生殖中心（台北院區）。\n相關詳細資訊可透過 App 查詢。\n此訊息以 LINE 傳送，方便您後續療程的安排，謝謝您。`;
+  } else {
+    msg = `${name} 您好，通知您的 ${type} 已經完成提領進行運輸，謝謝您。`;
   }
-});
+  
+  $('outPt').textContent = msg;
+}
+
+function clearPt() {
+  $('ptName').value = '';
+  $('outPt').textContent = '';
+}
+
+/* ===== 通用功能 ===== */
+function copyText(outputId) {
+  const text = $(outputId).textContent;
+  if (!text) { showToast('沒有內容可複製'); return; }
+  navigator.clipboard.writeText(text).then(() => showToast('已複製！'));
+}
+
+// 初始化
+initRoster();
+toggleDocFields(); // 預設顯示單筆
+
 </script>
 </body>
 </html>
