@@ -1,166 +1,205 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<link rel="icon" type="image/png" href="rescueICSI.png" />
-
+  <link rel="icon" type="image/png" href="rescueICSI.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>補救受精回報</title>
-  <link rel="icon" href="message-favicon.png" />
   <style>
-    html {
-      font-size: 13px;
-    }
+    /* 全域設定 - 與首頁統一 */
     body {
-      font-family: "Noto Sans TC", sans-serif;
-      background-color: #fdfaf6;
-      color: #333;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      font-size: 1rem;
+      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      background-color: #fdfaf7;
+      color: #4b3b30;
+      margin: 0;
+      padding: 2rem 1rem;
+      line-height: 1.6;
     }
+
+    .container {
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 25px rgba(216, 195, 165, 0.3);
+      border: 1px solid #f0e6dc;
+    }
+
     h1 {
       text-align: center;
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5rem;
       color: #5e473a;
-      font-size: 1.5rem;
+      font-weight: 800;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
     }
+
+    /* 導航區塊 */
     .nav {
       text-align: center;
-      margin-bottom: 1.5em;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    .nav a {
-      display: inline-block;
-      margin: 0 10px;
-      padding: 0.6em 1em;
-      background-color: #f3d7c3;
-      color: #5e473a;
-      border-radius: 10px;
+    
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      background-color: #fcefe6;
+      color: #8c6b5d;
+      border-radius: 20px;
       text-decoration: none;
       font-weight: bold;
-      font-size: 1rem;
-      transition: background-color 0.3s;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
     }
-    .nav a:hover {
-      background-color: #e5c0a8;
+    
+    .nav-btn:hover {
+      background-color: #f3d7c3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
+
+    /* 表單元件 */
     label {
       display: block;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-      font-size: 1rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+      color: #6d5648;
+      font-size: 0.95rem;
     }
+
     input {
       width: 100%;
-      padding: 0.5em;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.6rem;
+      border: 2px solid #eee5dd;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      background-color: #fdfdfd;
+      transition: all 0.2s;
+      box-sizing: border-box;
     }
-    button {
-      display: block;
-      margin: 2em auto 1em;
-      padding: 0.6em 1.2em;
-      background-color: #d8bfae;
-      color: #333;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #output {
+
+    input:focus {
+      outline: none;
+      border-color: #d8c3a5;
+      box-shadow: 0 0 0 4px rgba(216, 195, 165, 0.2);
       background-color: #fff;
-      padding: 1em;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      white-space: pre-wrap;
-      font-size: 1rem;
     }
-    #history {
-      margin-top: 2rem;
-      background-color: #f5eee6;
-      padding: 1rem;
-      border-radius: 1rem;
-      border: 1px solid #e0d6cd;
-    }
-    #history h2 {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    #historyList {
-      list-style: none;
-      padding-left: 0;
+
+    /* 按鈕 */
+    .btn-group {
       display: flex;
-      flex-direction: column-reverse;
       gap: 1rem;
+      margin-top: 2rem;
     }
-    #historyList li {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      background-color: #fff8f0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    #historyList li pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-    #historyList button {
-      margin-top: 0.5rem;
+
+    button {
+      flex: 1;
       background-color: #d8c3a5;
+      color: #4b3b30;
       border: none;
-      padding: 0.3rem 0.8rem;
-      border-radius: 0.4rem;
-      cursor: pointer;
-    }
-    #copyBtn {
-      display: none;
-      margin: 1em auto;
-      padding: 0.5em 1em;
-      background-color: #b89f90;
-      color: #fff;
+      padding: 0.8rem 1rem;
+      border-radius: 0.8rem;
       font-size: 1rem;
-      border: none;
-      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    button:hover {
+      background-color: #cbb08e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    /* 輸出區塊 */
+    #output {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #faf7f5;
+      border: 2px dashed #e0d6cd;
+      border-radius: 1rem;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    /* 歷史紀錄區塊 */
+    #history {
+      margin-top: 3rem;
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      border: 1px solid #f0e6dc;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    
+    .history-message {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.6;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* 手機版適配 */
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1rem; }
+      h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <h1>補救受精回報</h1>
+
+<div class="container">
+  <h1>🧬 補救受精回報</h1>
+  
   <div class="nav">
-    <a href="index.html">🔙 回報胚</a>
-    <a href="sperm.html">🧪 凍精訊息產生器</a>
-    <a href="transfer_message.html">📦 轉入｜輸出 回報訊息產生器</a>  
+    <a href="index.html" class="nav-btn">🔙 回報胚</a>
+    <a href="sperm.html" class="nav-btn">🧪 凍精訊息</a>
+    <a href="transfer_message.html" class="nav-btn">📦 轉入/輸出</a>
   </div>
 
-  <label for="name">🆔姓名</label>
-  <input type="text" id="name" placeholder="宜靜" />
+  <div class="card">
+    <label for="name">🆔 姓名</label>
+    <input type="text" id="name" placeholder="請輸入姓名" />
 
-  <label for="rescued">補救受精成功顆數：</label>
-  <input type="number" id="rescued" min="0" />
+    <label for="rescued">🧬 補救受精成功顆數</label>
+    <input type="number" id="rescued" min="0" placeholder="0" />
 
-  <label for="normal">D1 正常受精顆數：</label>
-  <input type="number" id="normal" min="0" />
+    <label for="normal">✅ D1 正常受精顆數</label>
+    <input type="number" id="normal" min="0" placeholder="0" />
 
-  <button onclick="generateMessage()">產生訊息</button>
-  <button id="copyBtn" onclick="copyMessage()">✅複製訊息</button>
+    <div class="btn-group">
+      <button onclick="generateMessage()">⚙️ 產生訊息</button>
+      <button onclick="copyMessage()" style="background-color: #a5d8b9; color: #2d4b38;">✅ 複製訊息</button>
+    </div>
 
-  <div id="output"></div>
+    <div id="output">（訊息將顯示於此）</div>
+  </div>
 
   <div id="history">
-    <h2>歷史紀錄</h2>
-    <ul id="historyList"></ul>
-    <button onclick="clearHistory()">🗑 清除歷史紀錄</button>
+    <h2 style="font-size: 1.1rem; margin-bottom: 1rem; text-align: center; color: #888;">⏳ 歷史紀錄</h2>
+    <ul id="historyList" style="list-style:none; padding-left:0; display: flex; flex-direction: column-reverse; gap: 1rem;"></ul>
+    <button onclick="clearHistory()" style="margin-top: 1rem; background-color: #eee; color:#666; width: 100%;">清除歷史紀錄</button>
   </div>
+</div>
 
-  <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
+<textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
 
-  <script>
+<script>
     window.addEventListener('load', loadHistory);
 
     function formatDate(date) {
@@ -170,29 +209,34 @@
     }
 
     function generateMessage() {
-      const name = document.getElementById("name").value.trim() || "ooo";
+      const name = document.getElementById("name").value.trim();
       const rescued = parseInt(document.getElementById("rescued").value);
       const normal = parseInt(document.getElementById("normal").value);
 
+      if (!name) { alert("請輸入姓名喔！"); return; }
       if (isNaN(rescued) || isNaN(normal)) {
-        alert("請完整填寫所有欄位。");
+        alert("請完整填寫顆數欄位（如無請填0）。");
         return;
       }
 
       const total = rescued + normal;
       const today = new Date();
+      // 邏輯保持不變：日期+6天
       today.setDate(today.getDate() + 6);
       const queryDate = formatDate(today);
 
       const message = `${name} 您好，實驗室通知您，\n🧪昨日補救受精的卵子有 ${rescued} 顆成功受精，\n🧫連同正常受精的一共有 ${total} 顆胚胎寶寶，我們會持續細心呵護他們。\n\n📱最後的冷凍顆數、胚胎的等級和照片您可於 ${queryDate} 17:00 後，在APP上查詢， 謝謝您。`;
 
       document.getElementById("output").textContent = message;
-      document.getElementById("copyBtn").style.display = "block";
       addToHistory(message);
     }
 
     function copyMessage() {
       const output = document.getElementById("output").textContent;
+      if (!output || output === '（訊息將顯示於此）') {
+          alert('請先產生訊息再複製喔！');
+          return;
+      }
       const hidden = document.getElementById("hiddenCopy");
       hidden.value = output;
       hidden.select();
@@ -201,32 +245,50 @@
       alert("訊息已複製！");
     }
 
-    function addToHistory(msg) {
+    function addToHistory(msg, fromLoad = false) {
       const historyList = document.getElementById('historyList');
       const li = document.createElement('li');
-      const pre = document.createElement('pre');
-      pre.textContent = msg;
+      // 歷史紀錄樣式優化
+      li.style.border = '1px solid #eee';
+      li.style.padding = '1rem';
+      li.style.borderRadius = '0.8rem';
+      li.style.backgroundColor = '#fafafa';
+      li.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+      li.style.display = 'flex';
+      li.style.flexDirection = 'column';
+      li.style.gap = '0.5rem';
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'history-message';
+      messageDiv.textContent = msg;
 
       const copyBtn = document.createElement('button');
-      copyBtn.textContent = '複製';
+      copyBtn.textContent = '複製此紀錄';
+      copyBtn.style.alignSelf = 'flex-end';
+      copyBtn.style.marginTop = '0';
+      copyBtn.style.padding = '0.4rem 0.8rem';
+      copyBtn.style.fontSize = '0.85rem';
+      copyBtn.style.backgroundColor = '#e0d6cd';
+      
       copyBtn.onclick = () => {
         const hidden = document.getElementById('hiddenCopy');
         hidden.value = msg;
         hidden.select();
         document.execCommand("copy");
         hidden.blur();
-        alert("已複製！");
+        alert("已複製紀錄！");
       };
 
-      li.appendChild(pre);
+      li.appendChild(messageDiv);
       li.appendChild(copyBtn);
       historyList.prepend(li);
 
-      saveHistory();
+      if (!fromLoad) saveHistory();
     }
 
     function saveHistory() {
-      const items = [...document.querySelectorAll('#historyList pre')].map(pre => pre.textContent);
+      const items = [...document.querySelectorAll('#historyList .history-message')].map(div => div.textContent);
+      // 使用與首頁不同的 Key，確保紀錄分開
       localStorage.setItem('rescueMessageHistory', JSON.stringify(items));
     }
 
@@ -234,14 +296,16 @@
       const data = localStorage.getItem('rescueMessageHistory');
       if (data) {
         const messages = JSON.parse(data);
-        messages.reverse().forEach(addToHistory);
+        messages.reverse().forEach(msg => addToHistory(msg, true));
       }
     }
 
     function clearHistory() {
-      document.getElementById('historyList').innerHTML = '';
-      localStorage.removeItem('rescueMessageHistory');
+      if(confirm('確定要清除此頁面的歷史紀錄嗎？')) {
+          document.getElementById('historyList').innerHTML = '';
+          localStorage.removeItem('rescueMessageHistory');
+      }
     }
-  </script>
+</script>
 </body>
 </html>
