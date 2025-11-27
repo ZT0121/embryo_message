@@ -186,10 +186,13 @@
     <option>5️⃣D5 切片＋冷凍（全部仍在觀察中）</option>
     <option>5️⃣D5 冷凍含部分切片（有觀察中）</option>
     <option>5️⃣D5 冷凍含部分切片（無觀察中）</option>
+    
+    <option>3️⃣D3植入 + D5 冷凍（無胚可凍）</option>
+    <option>3️⃣D3植入 + D5 切片 + 冷凍（無胚可切）</option>
   </select>
 
   <label for="name">🆔 姓名</label>
-  <input type="text" id="name" placeholder="請輸入姓名" />
+  <input type="text" id="name" placeholder="請輸入姓名 (選填)" />
   
   <label for="date">📆 今日日期</label>
   <input type="date" id="date" />
@@ -203,7 +206,7 @@
     <option value="7">7️⃣ D7</option>
   </select>
   
-  <label for="num1">☃️ 成功受精顆數 或 冷凍顆數</label>
+  <label for="num1">☃️ 成功受精 / 冷凍 / 植入 顆數</label>
   <input type="number" id="num1" min="0" placeholder="0" />
   
   <div id="biopsyFieldGroup">
@@ -300,6 +303,13 @@ function generateMessage() {
   } else if (type === '5️⃣D5 冷凍含部分切片（無觀察中）') {
     message = `${name}您好，今天是胚胎培養的第 ${stage} 天，實驗室和您更新目前胚胎的狀況：\n\n✅本次共冷凍 ${num1} 顆，其中有 ${num2} 顆胚胎是有切片的。\n\n📲詳細冷凍胚胎的等級和照片您可於 ${queryDateByStage()} 17:00 後，在APP上查詢， 謝謝您。`;
   }
+  
+  // 按照您的要求，將這兩個判斷式移到最後，與 HTML 選項順序一致
+  else if (type === '3️⃣D3植入 + D5 冷凍（無胚可凍）') {
+    message = `${name}早安，\n今天是胚胎培養的第 ${stage} 天，\n很可惜，剩下還在培養中的胚胎寶寶沒有繼續分裂長大，所以我們這次除了已經植入的 ${num1} 顆胚胎寶寶之外，沒有剩餘可以冷凍的胚胎。\n\n希望此次植入的胚胎寶寶能夠順利著床好好長大，謝謝您`;
+  } else if (type === '3️⃣D3植入 + D5 切片 + 冷凍（無胚可切）') {
+    message = `${name}早安，\n今天是胚胎培養的第 ${stage} 天，\n很可惜，剩下還在培養中的胚胎寶寶沒有繼續分裂長大，所以我們這次除了已經植入的 ${num1} 顆胚胎寶寶之外，沒有剩餘可以切片及冷凍的胚胎。\n\n希望此次植入的胚胎寶寶能夠順利著床好好長大，謝謝您`;
+  } 
 
   document.getElementById('output').textContent = message;
   addToHistory(message);
