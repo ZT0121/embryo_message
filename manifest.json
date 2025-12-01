@@ -1,6 +1,6 @@
 {
-  "name": "實驗室訊息小工具",
-  "short_name": "訊息工具",
+  "name": "MessageHub",
+  "short_name": "MessageHub",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fdfaf7",
