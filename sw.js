@@ -1,5 +1,4 @@
-// 👇 修改 1：版本號改一下 (例如 v1 改 v2)，強迫瀏覽器更新
-const CACHE_NAME = 'embryo-app-v2';
+const CACHE_NAME = 'embryo-app-2025-12-29-v2';
 
 const ASSETS = [
   './',
@@ -7,37 +6,40 @@ const ASSETS = [
   './rescueICSI.html',
   './sperm.html',
   './transfer_message.html',
-  './manifest.json', // 建議把 manifest 也加進來
-  './icon-512.png'   // 👇 修改 2：這裡改成您的新圖示檔名 (原本是 favicon.png, sperm.png 等)
+  './manifest.json',
+  './icon-512.png',
+  './favicon.png'
 ];
 
-// 安裝 Service Worker
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
-  self.skipWaiting(); // 強制立即啟用新版 Service Worker
+  self.skipWaiting();
 });
 
-// 啟動時清除舊快取
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(keys.map((key) => {
-        if (key !== CACHE_NAME) return caches.delete(key);
-      }));
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
+    )
   );
   self.clients.claim();
 });
 
-// 攔截請求
 self.addEventListener('fetch', (e) => {
+  const req = e.request;
+
+  // HTML 導覽：network-first，避免卡舊 index.html
+  if (req.mode === 'navigate') {
+    e.respondWith(
+      fetch(req).catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // 其他資源：cache-first
   e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
-    })
+    caches.match(req).then((cached) => cached || fetch(req))
   );
 });
