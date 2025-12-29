@@ -252,7 +252,7 @@
   </div>
 
 <script>
-  const APP_VERSION = "2025-12-29-v2";
+  const APP_VERSION = "2025-12-29";
 
 const savedVersion = localStorage.getItem("app_version");
 if (savedVersion !== APP_VERSION) {
@@ -267,6 +267,10 @@ window.addEventListener('load', () => {
   if (dateInput && !dateInput.value) {
     dateInput.value = `${yyyy}-${mm}-${dd}`;
   }
+
+  const vEl = document.getElementById('versionInfo');
+  if (vEl) vEl.textContent = `最後修改：${APP_VERSION}`;
+  
   loadHistory();
   toggleFields();
 });
