@@ -245,6 +245,13 @@
   </div>
 
 <script>
+  const APP_VERSION = "2025-12-29-v2";
+
+const savedVersion = localStorage.getItem("app_version");
+if (savedVersion !== APP_VERSION) {
+  localStorage.clear();
+  localStorage.setItem("app_version", APP_VERSION);
+}
 window.addEventListener('load', () => {
   const today = new Date();
   const yyyy = today.getFullYear();
