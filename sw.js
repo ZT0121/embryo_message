@@ -1,4 +1,5 @@
-const CACHE_NAME = 'embryo-app-2025-12-29-v1';
+const CACHE_NAME = 'embryo-app-v3.0a（2025.12.29）
+';
 
 const ASSETS = [
   './',
