@@ -176,6 +176,36 @@
     .hidden {
       display: none !important;
     }
+
+    /* 歷史區塊：標題字體協調 */
+.history-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #6d5648;
+  text-align: center;
+  margin: 0.2rem 0 0.6rem;
+}
+
+/* 歷史區塊：複製按鈕變成膠囊 tag */
+.history-copy-btn {
+  align-self: flex-end;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background-color: #e8d9c6;
+  color: #5e473a;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.history-copy-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
   </style>
 </head>
 <body>
@@ -249,9 +279,8 @@
       </button>
 
       <div id="historyContent" class="hidden"> 
-      <h2 style="font-size: 1.1rem; margin-bottom: 0.8rem; text-align: center;">
-        ⏳ 歷史紀錄
-      </h2>
+      <h2 class="history-title">⏳ 歷史紀錄</h2>
+
 
       <ul id="historyList"></ul>
       <button onclick="clearHistory()" style="margin-top: 0.8rem; background-color: #e4d1bd; width: 100%;">
