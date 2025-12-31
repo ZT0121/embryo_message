@@ -1,4 +1,6 @@
-// js/ui_common_v4.js
+// js/ui_common_v4.js  （用這份覆蓋你現有的）
+// - copy 按鈕改成用 class（history-copy-btn）
+// - li / message 用 class，讓字體跟頁面一致
 (function () {
   function qs(id) { return document.getElementById(id); }
 
@@ -35,8 +37,7 @@
 
     const copyBtn = document.createElement("button");
     copyBtn.className = "history-copy-btn";
-    copyBtn.textContent = "複製";
-
+    copyBtn.textContent = "複製此紀錄";
 
     copyBtn.onclick = () => {
       const hidden = qs(hiddenCopyElId);
@@ -83,7 +84,6 @@
     });
   }
 
-  // 對外 API
   window.CommonUI = {
     setVersionText,
     ensureTodayDate,
@@ -93,10 +93,9 @@
     clearHistory,
   };
 
-  // 一鍵初始化（每頁只要呼叫一次）
   window.initCommonUI = function ({
     appVersion,
-    storageKey,                 // 每頁不同，例如 "history_baopei", "history_rescueICSI"
+    storageKey,
     dateElId = "date",
     versionElId = "versionInfo",
     historyListElId = "historyList",
@@ -104,15 +103,12 @@
     toggleBtnId = "toggleHistoryBtn",
     contentId = "historyContent",
   }) {
-    // version + date
     if (appVersion) setVersionText(appVersion, versionElId);
-    ensureTodayDate(dateElId);
+    if (dateElId && dateElId !== "__none__") ensureTodayDate(dateElId);
 
-    // history
     initHistoryToggle({ toggleBtnId, contentId });
     loadHistory({ historyListElId, hiddenCopyElId, storageKey });
 
-    // 回傳工具，讓頁面可以直接用
     return {
       addToHistory: (msg) => addToHistory({ msg, historyListElId, hiddenCopyElId, storageKey }),
       clearHistory: () => clearHistory({ historyListElId, storageKey }),
