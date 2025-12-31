@@ -5,6 +5,14 @@ if (savedVersion !== APP_VERSION) {
   localStorage.setItem("app_version", APP_VERSION);
 }
 window.addEventListener('load', () => {
+  historyApi = initCommonUI({
+  appVersion: APP_VERSION,
+  storageKey: "history_baopei",
+});
+
+    window.historyApi = historyApi;
+});
+
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -63,8 +71,9 @@ function generateMessage() {
 
   const message = window.renderBaopeiMessage(type, payload);
 
-  document.getElementById('output').textContent = message;
-  addToHistory(message);
+document.getElementById('output').textContent = message;
+historyApi.addToHistory(message);
+
 }
 
 
@@ -144,3 +153,8 @@ function loadHistory() {
     ? '📂 隱藏歷史紀錄'
     : '📂 顯示歷史紀錄';
 });
+
+function clearHistory() {
+  historyApi.clearHistory();
+}
+
