@@ -1,4 +1,4 @@
-  const APP_VERSION = "v3.0a（2025.12.29）";
+  const APP_VERSION = "v3.0b（2025.12.31）";
 
 const savedVersion = localStorage.getItem("app_version");
 if (savedVersion !== APP_VERSION) {
