@@ -1,3 +1,4 @@
+<!-- sperm.html（已整合：修改日期 + 歷史收合 + 共用 ui_common_v4.js + 歷史字體一致） -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -20,9 +21,8 @@
       });
     }
   </script>
-  
+
   <style>
-    /* 全域設定 */
     body {
       font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
       font-size: 13px;
@@ -33,10 +33,7 @@
       line-height: 1.5;
     }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
+    .container { max-width: 600px; margin: 0 auto; }
 
     h1 {
       text-align: center;
@@ -47,7 +44,6 @@
       letter-spacing: 1px;
     }
 
-    /* 導航區塊 - 統一圓潤風格 (與 rescueICSI.html 一致) */
     .nav {
       text-align: center;
       margin-bottom: 1.5rem;
@@ -56,28 +52,27 @@
       gap: 0.5rem;
       flex-wrap: wrap;
     }
-    
+
     .nav-btn {
       display: inline-flex;
       align-items: center;
       padding: 6px 12px;
-      background-color: #fcefe6; /* 淺米色 */
+      background-color: #fcefe6;
       color: #8c6b5d;
-      border-radius: 20px; /* 圓潤邊角 */
+      border-radius: 20px;
       text-decoration: none;
       font-weight: bold;
       font-size: 13px;
       transition: all 0.3s ease;
       border: 1px solid transparent;
     }
-    
+
     .nav-btn:hover {
       background-color: #f3d7c3;
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    /* 表單元件 */
     label {
       display: block;
       margin-top: 1rem;
@@ -104,7 +99,6 @@
       box-shadow: 0 0 0 3px rgba(216, 195, 165, 0.3);
     }
 
-    /* 數據群組框 */
     .data-group {
       background-color: #fff;
       border: 1px solid #eee;
@@ -112,7 +106,7 @@
       border-radius: 0.6rem;
       margin-top: 0.8rem;
     }
-    
+
     .data-group h3 {
       margin-top: 0;
       font-size: 14px;
@@ -122,7 +116,6 @@
       margin-bottom: 0.8rem;
     }
 
-    /* 按鈕 */
     .btn-group {
       display: flex;
       gap: 0.8rem;
@@ -148,7 +141,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* 輸出區塊 */
     #output {
       margin-top: 1.5rem;
       padding: 1rem;
@@ -160,15 +152,15 @@
       color: #444;
     }
 
-    /* 歷史紀錄 */
+    /* 歷史區塊 */
     #history {
-      margin-top: 2rem;
+      margin-top: 1rem;
       background-color: #f5eee6;
       padding: 1rem;
       border-radius: 0.6rem;
       border: 1px solid #e0d6cd;
     }
-    
+
     .history-message {
       white-space: pre-wrap;
       word-break: break-word;
@@ -195,19 +187,48 @@
       gap: 0.5rem;
     }
 
-    /* 手機版適配 */
-    @media (max-width: 480px) {
-      h1 { font-size: 1.4rem; }
-    }
-    
+    .hidden { display: none !important; }
     .scenario-block { display: none; }
+
+    /* 歷史標題（跟 index 同步） */
+    .history-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #6d5648;
+      text-align: center;
+      margin: 0.2rem 0 0.6rem;
+    }
+
+    /* 歷史複製按鈕（跟 index 同步） */
+    .history-copy-btn {
+      align-self: flex-end;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      background-color: #e8d9c6;
+      color: #5e473a;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      flex: none;
+      width: auto;
+    }
+
+    .history-copy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+
+    @media (max-width: 480px) { h1 { font-size: 1.4rem; } }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>🧪 凍精訊息產生器</h1>
-  
+
   <div class="nav">
     <a href="index.html" class="nav-btn">🔙 回報胚</a>
     <a href="rescueICSI.html" class="nav-btn">🧬 補救受精</a>
@@ -216,250 +237,225 @@
 
   <label for="scenario">📌 選擇狀況</label>
   <select id="scenario" onchange="switchScenario()">
-      <option value="">--- 請選擇 ---</option>
-      <option value="s1">個案不在現場等候</option>
-      <option value="s2b">個案在現場，二取仍不佳</option>
+    <option value="">--- 請選擇 ---</option>
+    <option value="s1">個案不在現場等候</option>
+    <option value="s2b">個案在現場，二取仍不佳</option>
   </select>
 
   <div style="display:flex; gap:1rem;">
-      <div style="flex:1;">
-          <label>🔢 病歷號</label>
-          <input type="text" id="caseId" placeholder="12345">
-      </div>
-      <div style="flex:1;">
-          <label>👤 姓名</label>
-          <input type="text" id="caseName" placeholder=" ">
-      </div>
+    <div style="flex:1;">
+      <label>🔢 病歷號</label>
+      <input type="text" id="caseId" placeholder="12345">
+    </div>
+    <div style="flex:1;">
+      <label>👤 姓名</label>
+      <input type="text" id="caseName" placeholder=" ">
+    </div>
   </div>
 
   <label for="doctor">🩺 選擇醫師</label>
   <select id="doctor">
-      <option value="">--- 請選擇 ---</option>
-      <option value="陳醫師">陳醫師</option>
-      <option value="廖院">廖院</option>
-      <option value="詹醫師">詹醫師</option>
-      <option value="沈醫師">沈醫師</option>
-      <option value="張醫師">張醫師</option>
-      <option value="劉醫師">劉醫師</option>
-      <option value="朱院">朱院</option>
-      <option value="王院">王院</option>
-      <option value="林醫師">林醫師</option>
-      <option value="李醫師">李醫師</option>
-      <option value="何醫師">何醫師</option>
-      <option value="洪醫師">洪醫師</option>
-      <option value="自填">其他（自填）</option>
+    <option value="">--- 請選擇 ---</option>
+    <option value="陳醫師">陳醫師</option>
+    <option value="廖院">廖院</option>
+    <option value="詹醫師">詹醫師</option>
+    <option value="沈醫師">沈醫師</option>
+    <option value="張醫師">張醫師</option>
+    <option value="劉醫師">劉醫師</option>
+    <option value="朱院">朱院</option>
+    <option value="王院">王院</option>
+    <option value="林醫師">林醫師</option>
+    <option value="李醫師">李醫師</option>
+    <option value="何醫師">何醫師</option>
+    <option value="洪醫師">洪醫師</option>
+    <option value="自填">其他（自填）</option>
   </select>
   <input type="text" id="doctorCustom" placeholder="輸入醫師姓名" style="display:none; margin-top:0.5rem;">
 
   <div id="scenario1" class="scenario-block">
-      <div class="data-group">
-          <h3>🔬 檢體數據</h3>
-          <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
-          <label>Concentration (M)：<input type="number" id="conc1"></label>
-          <label>PR (%)：<input type="number" id="PR1"></label>
-          <label>❄️ 冷凍管數：<input type="number" id="tubes1"></label>
-      </div>
-      <div class="btn-group">
-          <button onclick="generateDoctor1()">🩺 產生醫師訊息</button>
-          <button onclick="generatePatient1()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
-      </div>
+    <div class="data-group">
+      <h3>🔬 檢體數據</h3>
+      <label>Volume (ml)：<input type="number" id="volume1" step="0.1"></label>
+      <label>Concentration (M)：<input type="number" id="conc1"></label>
+      <label>PR (%)：<input type="number" id="PR1"></label>
+      <label>❄️ 冷凍管數：<input type="number" id="tubes1"></label>
+    </div>
+    <div class="btn-group">
+      <button onclick="generateDoctor1()">🩺 產生醫師訊息</button>
+      <button onclick="generatePatient1()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
+    </div>
   </div>
 
   <div id="scenario2b" class="scenario-block">
-      <div class="data-group">
-          <h3>🔬 第一次檢體</h3>
-          <label>Volume (ml)：<input type="number" id="volume21" step="0.1"></label>
-          <label>Concentration (M)：<input type="number" id="conc21"></label>
-          <label>PR (%)：<input type="number" id="PR21"></label>
-      </div>
+    <div class="data-group">
+      <h3>🔬 第一次檢體</h3>
+      <label>Volume (ml)：<input type="number" id="volume21" step="0.1"></label>
+      <label>Concentration (M)：<input type="number" id="conc21"></label>
+      <label>PR (%)：<input type="number" id="PR21"></label>
+    </div>
 
-      <div class="data-group">
-          <h3>🔬 第二次檢體</h3>
-          <label>Volume (ml)：<input type="number" id="volume22" step="0.1"></label>
-          <label>Concentration (M)：<input type="number" id="conc22"></label>
-          <label>PR (%)：<input type="number" id="PR22"></label>
-      </div>
-      
-      <label>❄️ 冷凍管數：</label>
-      <input type="number" id="tubes2">
+    <div class="data-group">
+      <h3>🔬 第二次檢體</h3>
+      <label>Volume (ml)：<input type="number" id="volume22" step="0.1"></label>
+      <label>Concentration (M)：<input type="number" id="conc22"></label>
+      <label>PR (%)：<input type="number" id="PR22"></label>
+    </div>
 
-      <div class="btn-group">
-          <button onclick="generateDoctor2B()">🩺 產生醫師訊息</button>
-          <button onclick="generatePatient2B()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
-      </div>
+    <label>❄️ 冷凍管數：</label>
+    <input type="number" id="tubes2">
+
+    <div class="btn-group">
+      <button onclick="generateDoctor2B()">🩺 產生醫師訊息</button>
+      <button onclick="generatePatient2B()" style="background-color: #e5c0a8;">👤 產生個案訊息</button>
+    </div>
   </div>
 
   <button onclick="copyMessage()" style="margin-top: 1.5rem; background-color: #a5d8b9; color: #2d4b38; width:100%;">✅ 複製訊息</button>
   <div id="output"></div>
 
+  <div id="versionInfo" style="font-size: 12px; color:#8c6b5d; text-align:center; margin: 0.6rem 0 0.3rem;"></div>
+
   <div id="history">
-    <h2 style="font-size: 1.1rem; margin-bottom: 0.8rem; text-align: center; color: #8c6b5d;">⏳ 歷史紀錄</h2>
-    <ul id="historyList"></ul>
-    <button onclick="clearHistory()" style="margin-top: 0.8rem; background-color: #eee; width: 100%; color:#666; border:none; padding:0.6rem; border-radius:0.5rem; cursor:pointer;">清除所有紀錄</button>
+    <button id="toggleHistoryBtn" style="width:100%; margin-bottom:0.6rem; background-color:#f3e6da;">
+      📂 顯示歷史紀錄
+    </button>
+
+    <div id="historyContent" class="hidden">
+      <h2 class="history-title">⏳ 歷史紀錄</h2>
+      <ul id="historyList"></ul>
+      <button onclick="clearHistory()" style="margin-top: 0.8rem; background-color: #eee; width: 100%; color:#666; border:none; padding:0.6rem; border-radius:0.5rem; cursor:pointer;">清除所有紀錄</button>
+    </div>
   </div>
-  
+
   <textarea id="hiddenCopy" style="position:absolute; left:-9999px;"></textarea>
 </div>
 
+<!-- 先載入共用 UI -->
+<script src="js/ui_common_v4.js?v=4.0.0"></script>
+
 <script>
-    window.addEventListener('load', loadHistory);
+  const APP_VERSION = "v2.0｜2025.12.31";
+  let historyApi;
 
-    document.getElementById("doctor").addEventListener("change", function() {
-      let custom = document.getElementById("doctorCustom");
-      custom.style.display = (this.value === "自填") ? "block" : "none";
+  window.addEventListener('load', () => {
+    historyApi = initCommonUI({
+      appVersion: APP_VERSION,
+      storageKey: "history_sperm",
+      dateElId: "__none__", // 這頁沒有 date
     });
+    window.historyApi = historyApi;
+  });
 
-    function switchScenario() {
-      document.getElementById("scenario1").style.display = "none";
-      document.getElementById("scenario2b").style.display = "none";
-      let s = document.getElementById("scenario").value;
-      if (s === "s1") document.getElementById("scenario1").style.display = "block";
-      if (s === "s2b") document.getElementById("scenario2b").style.display = "block";
+  document.getElementById("doctor").addEventListener("change", function() {
+    let custom = document.getElementById("doctorCustom");
+    custom.style.display = (this.value === "自填") ? "block" : "none";
+  });
+
+  function switchScenario() {
+    document.getElementById("scenario1").style.display = "none";
+    document.getElementById("scenario2b").style.display = "none";
+    let s = document.getElementById("scenario").value;
+    if (s === "s1") document.getElementById("scenario1").style.display = "block";
+    if (s === "s2b") document.getElementById("scenario2b").style.display = "block";
+  }
+
+  function generateDoctor1() {
+    let caseId = document.getElementById("caseId").value.trim();
+    let caseName = document.getElementById("caseName").value.trim();
+    let doctor = document.getElementById("doctor").value;
+    if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
+
+    let volume = parseFloat(document.getElementById("volume1").value);
+    let conc = parseFloat(document.getElementById("conc1").value);
+    let PR = parseFloat(document.getElementById("PR1").value);
+    let tubes = document.getElementById("tubes1").value.trim();
+
+    let abnormalities = [];
+    if (!isNaN(volume) && volume < 1) abnormalities.push(`Volume: ${volume} ml`);
+    if (!isNaN(conc) && conc < 15) abnormalities.push(`Concentration: ${conc} M`);
+    if (!isNaN(PR) && PR < 30) abnormalities.push(`PR: ${PR}%`);
+
+    if (abnormalities.length === 0) {
+      displayAndSave("（數據無異常，不需傳訊息）");
+      return;
     }
 
-    /* 產生與邏輯函數 (同前版) */
-    function generateDoctor1() {
-      let caseId = document.getElementById("caseId").value.trim();
-      let caseName = document.getElementById("caseName").value.trim();
-      let doctor = document.getElementById("doctor").value;
-      if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
-      let volume = parseFloat(document.getElementById("volume1").value);
-      let conc = parseFloat(document.getElementById("conc1").value);
-      let PR = parseFloat(document.getElementById("PR1").value);
-      let tubes = document.getElementById("tubes1").value.trim();
+    let message = `${doctor}您好，\n\n今日凍精個案 #${caseId} ${caseName}\n檢體分析：\n\n${abnormalities.join("\n")}\n\n由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。\n`;
+    displayAndSave(message);
+  }
 
-      let abnormalities = [];
-      if (volume < 1) abnormalities.push(`Volume: ${volume} ml`);
-      if (conc < 15) abnormalities.push(`Concentration: ${conc} M`);
-      if (PR < 30) abnormalities.push(`PR: ${PR}%`);
+  function generatePatient1() {
+    let caseName = document.getElementById("caseName").value.trim();
+    let tubes = document.getElementById("tubes1").value.trim();
+    let abnormalities = [];
+    let volume = parseFloat(document.getElementById("volume1").value);
+    let conc = parseFloat(document.getElementById("conc1").value);
+    let PR = parseFloat(document.getElementById("PR1").value);
+    if (!isNaN(volume) && volume < 1) abnormalities.push("體積不足");
+    if (!isNaN(conc) && conc < 15) abnormalities.push("濃度偏低");
+    if (!isNaN(PR) && PR < 30) abnormalities.push("活動力不足");
 
-      if (abnormalities.length === 0) {
-        displayAndSave("（數據無異常，不需傳訊息）");
-        return;
-      }
+    let abnText = abnormalities.length > 0 ? `（${abnormalities.join("、")}）` : "";
+    let message = `${caseName}您好，\n\n今日檢體精蟲狀況較不理想${abnText}。\n我們已先將此次精蟲冷凍 ${tubes} 管，\n建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n此次凍精的檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n謝謝您。`;
+    displayAndSave(message);
+  }
 
-      let message = `${doctor}您好，\n\n今日凍精個案 #${caseId} ${caseName}\n檢體分析：\n\n${abnormalities.join("\n")}\n\n由於個案今日無法留在現場等候，實驗室已先將此次精蟲冷凍 ${tubes} 管，\n建議個案可以擇日再冷凍，或者於受精療程當天使用新鮮精蟲受精。\n`;
-      displayAndSave(message);
+  function generateDoctor2B() {
+    let caseId = document.getElementById("caseId").value.trim();
+    let caseName = document.getElementById("caseName").value.trim();
+    let doctor = document.getElementById("doctor").value;
+    if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
+
+    let v1 = document.getElementById("volume21").value.trim();
+    let c1 = document.getElementById("conc21").value.trim();
+    let p1 = document.getElementById("PR21").value.trim();
+    let v2 = document.getElementById("volume22").value.trim();
+    let c2 = document.getElementById("conc22").value.trim();
+    let p2 = document.getElementById("PR22").value.trim();
+    let tubes = document.getElementById("tubes2").value.trim();
+
+    let message = `${doctor}您好，\n\n今日凍精個案 #${caseId} ${caseName}\n檢體分析：\n\n第一次：\n  Volume: ${v1} ml\n  Concentration: ${c1} M\n  PR: ${p1}%\n\n第二次：\n  Volume: ${v2} ml\n  Concentration: ${c2} M\n  PR: ${p2}%\n\n二次繳交後精蟲狀況仍不佳，\n實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n建議可請個案擇日安排再次凍精，或於受精療程當天使用新鮮精蟲。`;
+    displayAndSave(message);
+  }
+
+  function generatePatient2B() {
+    let caseName = document.getElementById("caseName").value.trim();
+    let tubes = document.getElementById("tubes2").value.trim();
+
+    let abn = [];
+    let c2 = parseFloat(document.getElementById("conc22").value);
+    let p2 = parseFloat(document.getElementById("PR22").value);
+    if (!isNaN(c2) && c2 < 15) abn.push("濃度偏低");
+    if (!isNaN(p2) && p2 < 30) abn.push("活動力不足");
+    let abnText = abn.length > 0 ? `（${abn.join("、")}）` : "";
+
+    let message = `${caseName}您好，\n\n今日您於本院繳交 2 次檢體，精蟲狀況仍不理想${abnText}。\n我們已先將此次精蟲冷凍 ${tubes} 管備用，\n建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n謝謝您。`;
+    displayAndSave(message);
+  }
+
+  function displayAndSave(msg) {
+    document.getElementById("output").innerText = msg;
+    if (window.historyApi) window.historyApi.addToHistory(msg);
+  }
+
+  function copyMessage() {
+    let text = document.getElementById("output").innerText;
+    if (!text || text.includes("不需傳訊息")) {
+      alert("目前沒有需要複製的訊息");
+      return;
     }
+    const hidden = document.getElementById("hiddenCopy");
+    hidden.value = text;
+    hidden.select();
+    document.execCommand("copy");
+    hidden.blur();
+    alert("訊息已複製");
+  }
 
-    function generatePatient1() {
-      let caseName = document.getElementById("caseName").value.trim();
-      let tubes = document.getElementById("tubes1").value.trim();
-      let abnormalities = [];
-      let volume = parseFloat(document.getElementById("volume1").value);
-      let conc = parseFloat(document.getElementById("conc1").value);
-      let PR = parseFloat(document.getElementById("PR1").value);
-      if (volume < 1) abnormalities.push("體積不足");
-      if (conc < 15) abnormalities.push("濃度偏低");
-      if (PR < 30) abnormalities.push("活動力不足");
+  function clearHistory() {
+    if (window.historyApi) window.historyApi.clearHistory();
+  }
+</script>
 
-      let abnText = abnormalities.length > 0 ? `（${abnormalities.join("、")}）` : "";
-      let message = `${caseName}您好，\n\n今日檢體精蟲狀況較不理想${abnText}。\n我們已先將此次精蟲冷凍 ${tubes} 管，\n建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n此次凍精的檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n謝謝您。`;
-      displayAndSave(message);
-    }
-
-    function generateDoctor2B() {
-      let caseId = document.getElementById("caseId").value.trim();
-      let caseName = document.getElementById("caseName").value.trim();
-      let doctor = document.getElementById("doctor").value;
-      if (doctor === "自填") doctor = document.getElementById("doctorCustom").value;
-      let v1 = document.getElementById("volume21").value.trim();
-      let c1 = document.getElementById("conc21").value.trim();
-      let p1 = document.getElementById("PR21").value.trim();
-      let v2 = document.getElementById("volume22").value.trim();
-      let c2 = document.getElementById("conc22").value.trim();
-      let p2 = document.getElementById("PR22").value.trim();
-      let tubes = document.getElementById("tubes2").value.trim();
-
-      let message = `${doctor}您好，\n\n今日凍精個案 #${caseId} ${caseName}\n檢體分析：\n\n第一次：\n  Volume: ${v1} ml\n  Concentration: ${c1} M\n  PR: ${p1}%\n\n第二次：\n  Volume: ${v2} ml\n  Concentration: ${c2} M\n  PR: ${p2}%\n\n二次繳交後精蟲狀況仍不佳，\n實驗室已先將此次精蟲冷凍 ${tubes} 管備用，\n建議可請個案擇日安排再次凍精，或於受精療程當天使用新鮮精蟲。`;
-      displayAndSave(message);
-    }
-
-    function generatePatient2B() {
-      let caseName = document.getElementById("caseName").value.trim();
-      let tubes = document.getElementById("tubes2").value.trim();
-      let abn = [];
-      let c2 = parseFloat(document.getElementById("conc22").value);
-      let p2 = parseFloat(document.getElementById("PR22").value);
-      if (c2 < 15) abn.push("濃度偏低");
-      if (p2 < 30) abn.push("活動力不足");
-      let abnText = abn.length > 0 ? `（${abn.join("、")}）` : "";
-
-      let message = `${caseName}您好，\n\n今日您於本院繳交 2 次檢體，精蟲狀況仍不理想${abnText}。\n我們已先將此次精蟲冷凍 ${tubes} 管備用，\n建議您可擇日安排再次凍精，或於受精療程當天提供新鮮精液。\n此次檢驗報告已上傳至 APP，若有疑問也建議您回診與醫師諮詢。\n謝謝您。`;
-      displayAndSave(message);
-    }
-
-    function displayAndSave(msg) {
-        document.getElementById("output").innerText = msg;
-        addToHistory(msg);
-    }
-
-    function copyMessage() {
-      let text = document.getElementById("output").innerText;
-      if (!text || text.includes("不需傳訊息")) {
-        alert("目前沒有需要複製的訊息");
-        return;
-      }
-      const hidden = document.getElementById("hiddenCopy");
-      hidden.value = text;
-      hidden.select();
-      document.execCommand("copy");
-      hidden.blur();
-      alert("訊息已複製");
-    }
-
-    /* 歷史紀錄 (Key: spermMessageHistory) */
-    function addToHistory(msg, fromLoad = false) {
-      const historyList = document.getElementById('historyList');
-      const li = document.createElement('li');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'history-message';
-      messageDiv.textContent = msg;
-
-      const copyBtn = document.createElement('button');
-      copyBtn.textContent = '複製此紀錄';
-      copyBtn.style.marginTop = '0';
-      copyBtn.style.backgroundColor = '#d8c3a5';
-      copyBtn.style.padding = '0.5rem 1rem';
-      copyBtn.style.fontSize = '0.9rem';
-      copyBtn.style.alignSelf = 'flex-end';
-      copyBtn.style.width = 'auto'; 
-      copyBtn.style.flex = 'none';
-
-      copyBtn.onclick = () => {
-        const hidden = document.getElementById('hiddenCopy');
-        hidden.value = msg;
-        hidden.select();
-        document.execCommand("copy");
-        hidden.blur();
-        alert("已複製紀錄！");
-      };
-
-      li.appendChild(messageDiv);
-      li.appendChild(copyBtn);
-      historyList.prepend(li);
-      if (!fromLoad) saveHistory();
-    }
-
-    function saveHistory() {
-      const items = [...document.querySelectorAll('#historyList .history-message')].map(div => div.textContent);
-      localStorage.setItem('spermMessageHistory', JSON.stringify(items));
-    }
-
-    function loadHistory() {
-      const data = localStorage.getItem('spermMessageHistory');
-      if (data) {
-        const messages = JSON.parse(data);
-        messages.reverse().forEach(msg => addToHistory(msg, true));
-      }
-    }
-
-    function clearHistory() {
-      if(confirm('確定要清除此頁面的歷史紀錄嗎？')) {
-          document.getElementById('historyList').innerHTML = '';
-          localStorage.removeItem('spermMessageHistory');
-      }
-    }
-  </script>
 </body>
 </html>
