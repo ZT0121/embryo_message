@@ -1,4 +1,3 @@
-<script>
   const APP_VERSION = "v3.0a（2025.12.29）";
 
 const savedVersion = localStorage.getItem("app_version");
@@ -171,5 +170,3 @@ function loadHistory() {
     ? '📂 隱藏歷史紀錄'
     : '📂 顯示歷史紀錄';
 });
-
-</script>
