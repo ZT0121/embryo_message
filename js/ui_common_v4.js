@@ -34,12 +34,9 @@
     messageDiv.textContent = msg;
 
     const copyBtn = document.createElement("button");
-    copyBtn.textContent = "複製此紀錄";
-    copyBtn.style.marginTop = "0";
-    copyBtn.style.backgroundColor = "#d8c3a5";
-    copyBtn.style.padding = "0.5rem 1rem";
-    copyBtn.style.fontSize = "0.9rem";
-    copyBtn.style.alignSelf = "flex-end";
+    copyBtn.className = "history-copy-btn";
+    copyBtn.textContent = "複製";
+
 
     copyBtn.onclick = () => {
       const hidden = qs(hiddenCopyElId);
