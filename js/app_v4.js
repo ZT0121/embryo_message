@@ -1,5 +1,5 @@
 // js/app_v4.js
-const APP_VERSION = "v3.0 c｜2025.12.31";
+const APP_VERSION = "v3.0 D｜2026.02.05";
 let historyApi;
 
 window.addEventListener('load', () => {
