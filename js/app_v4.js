@@ -91,7 +91,7 @@ function initUpdateButton() {
       const { hasUpdate } = await waitForWaiting();
 
       if (!hasUpdate) {
-        setUpdateStatus('目前已是最新版（或更新尚未就緒，可稍後再按一次）。');
+        setUpdateStatus(`目前已是最新版（版本號：${APP_VERSION}）`);
         return;
       }
 
