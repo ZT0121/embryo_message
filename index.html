@@ -218,6 +218,15 @@
     <a href="transfer_message.html" class="nav-btn">📦 轉入｜輸出 回報訊息產生器</a>
   </div>
 
+  <label for="stage">📍 今天是</label>
+  <select id="stage">
+    <option value="1">1️⃣ D1</option>
+    <option value="3">3️⃣ D3</option>
+    <option value="5" selected>5️⃣ D5</option>
+    <option value="6">6️⃣ D6</option>
+    <option value="7">7️⃣ D7</option>
+  </select>
+
   <!-- 主流程：不再選「情境」，改成用欄位自動判斷模板 -->
   <label for="status">🐣 胚胎狀態</label>
   <select id="status">
@@ -266,14 +275,7 @@
   <label for="date">📆 今日日期</label>
   <input type="date" id="date" />
   
-  <label for="stage">📍 今天是</label>
-  <select id="stage">
-    <option value="1">1️⃣ D1</option>
-    <option value="3">3️⃣ D3</option>
-    <option value="5" selected>5️⃣ D5</option>
-    <option value="6">6️⃣ D6</option>
-    <option value="7">7️⃣ D7</option>
-  </select>
+  <!-- 📍今天是 moved to top -->
   
   <label for="num1">☃️ 冷凍顆數（或 D3 植入顆數 / D1 受精顆數）</label>
   <input type="number" id="num1" min="0" placeholder="0" />
