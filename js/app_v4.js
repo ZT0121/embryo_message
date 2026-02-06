@@ -56,11 +56,22 @@ function initAdvancedD1Toggle() {
 
 function updateFormVisibility() {
   const stage = parseInt(qs('stage')?.value || '5', 10);
-  const status = qs('status')?.value || 'done';
   const specialMode = qs('specialMode')?.value || 'none';
+
+  const statusEl = qs('status');
+  const status = statusEl?.value || 'done';
 
   const biopsyGroup = qs('biopsyFieldGroup');
   const planGroup = qs('planWhenAllObservingGroup');
+
+  // D3：固定只有「已完成（無觀察中）」的版本
+  // 進到 D3 時自動切到 done，並鎖住狀態避免誤選
+  if (specialMode === 'none' && stage === 3 && statusEl) {
+    statusEl.value = 'done';
+    statusEl.disabled = true;
+  } else if (statusEl) {
+    statusEl.disabled = false;
+  }
 
   // 特殊情境時：仍可輸入 stage/date/name/num1，但不需要 num2/狀態判斷
   if (specialMode !== 'none') {
@@ -69,12 +80,15 @@ function updateFormVisibility() {
     return;
   }
 
+  // 重新讀一次（可能剛被自動改成 done）
+  const status2 = statusEl?.value || status;
+
   // 只有 D5-7 會用到 num2（切片顆數）
-  const showBiopsy = stage >= 5 && status !== 'all_observing';
+  const showBiopsy = stage >= 5 && status2 !== 'all_observing';
   if (biopsyGroup) biopsyGroup.classList.toggle('hidden', !showBiopsy);
 
   // 「全部仍在觀察中」時，需要指定走 冷凍版 or 切片+冷凍版
-  const showPlan = stage >= 5 && status === 'all_observing';
+  const showPlan = stage >= 5 && status2 === 'all_observing';
   if (planGroup) planGroup.classList.toggle('hidden', !showPlan);
 }
 
