@@ -1,5 +1,5 @@
 // js/app_v4.js
-const APP_VERSION = "v3.1.2｜2026.02.06";
+const APP_VERSION = "v3.1.3｜2026.02.06";
 let historyApi;
 let lastStage;
 
