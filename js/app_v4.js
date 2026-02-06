@@ -39,6 +39,7 @@ function initUpdateButton() {
   btn.addEventListener('click', async () => {
     try {
       setUpdateStatus('正在檢查更新…');
+      btn.disabled = true;
 
       if (!('serviceWorker' in navigator)) {
         setUpdateStatus('此瀏覽器不支援自動更新（無 Service Worker）。');
@@ -51,15 +52,53 @@ function initUpdateButton() {
         return;
       }
 
-      // 1) 先向網路查一次
+      // 等待「有 waiting worker」或判定「沒有更新」
+      const waitForWaiting = () => new Promise((resolve) => {
+        // 已經有 waiting
+        if (reg.waiting) return resolve({ hasUpdate: true });
+
+        let done = false;
+        const finish = (result) => {
+          if (done) return;
+          done = true;
+          try { reg.removeEventListener('updatefound', onUpdateFound); } catch (_) {}
+          resolve(result);
+        };
+
+        const onStateChange = () => {
+          // 安裝完成後，會變成 waiting（若有舊 controller）
+          if (reg.waiting) finish({ hasUpdate: true });
+        };
+
+        const onUpdateFound = () => {
+          const installing = reg.installing;
+          if (installing) installing.addEventListener('statechange', onStateChange);
+        };
+
+        reg.addEventListener('updatefound', onUpdateFound);
+
+        // 保險：2.5 秒後仍無 waiting，視為「目前已是最新」或更新尚未就緒
+        setTimeout(() => {
+          if (reg.waiting) finish({ hasUpdate: true });
+          else finish({ hasUpdate: false });
+        }, 2500);
+      });
+
+      // 1) 向網路查更新
       await reg.update();
 
-      // 2) 若有 waiting worker：請它立刻接管
-      if (reg.waiting) {
-        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      // 2) 等它下載到 waiting
+      const { hasUpdate } = await waitForWaiting();
+
+      if (!hasUpdate) {
+        setUpdateStatus('目前已是最新版（或更新尚未就緒，可稍後再按一次）。');
+        return;
       }
 
-      // 3) 等 controller 換手後 reload
+      // 3) 讓 waiting worker 立刻接管
+      reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+
+      // 4) 等 controller 換手後 reload
       let reloaded = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (reloaded) return;
@@ -68,17 +107,15 @@ function initUpdateButton() {
         window.location.reload();
       });
 
-      // 如果沒有 waiting，也可能代表「已是最新版」或「更新下載中」
-      if (!reg.waiting) {
-        // 給它一點時間看會不會變成 waiting
-        setTimeout(() => {
-          // 如果還沒換 controller，就提示使用者
-          setUpdateStatus('若剛剛有更新，請手動重新整理一次（或稍後再按更新）。');
-        }, 1200);
-      }
+      // 如果 controllerchange 沒發生（少數狀況），給提示
+      setTimeout(() => {
+        if (!reloaded) setUpdateStatus('更新已套用，若畫面未更新請手動重新開啟此頁。');
+      }, 2500);
     } catch (e) {
       console.error(e);
       setUpdateStatus('更新失敗：請稍後再試，或重新整理頁面。');
+    } finally {
+      btn.disabled = false;
     }
   });
 }
