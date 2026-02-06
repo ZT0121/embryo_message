@@ -64,13 +64,10 @@ function updateFormVisibility() {
   const biopsyGroup = qs('biopsyFieldGroup');
   const planGroup = qs('planWhenAllObservingGroup');
 
-  // D3：固定只有「已完成（無觀察中）」的版本
-  // 進到 D3 時自動切到 done，並鎖住狀態避免誤選
+  // D3：預設改成「已完成（無觀察中）」
+  // 但不鎖住，讓你仍可手動改
   if (specialMode === 'none' && stage === 3 && statusEl) {
     statusEl.value = 'done';
-    statusEl.disabled = true;
-  } else if (statusEl) {
-    statusEl.disabled = false;
   }
 
   // 特殊情境時：仍可輸入 stage/date/name/num1，但不需要 num2/狀態判斷
