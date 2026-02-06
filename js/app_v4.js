@@ -48,9 +48,7 @@ function initAdvancedD1Toggle() {
   btn.addEventListener('click', () => {
     const isHidden = content.classList.contains('hidden');
     content.classList.toggle('hidden');
-    btn.textContent = isHidden
-      ? '🧩（進階）D1 受精回報（點此收合）'
-      : '🧩（進階）D1 受精回報（不常用）';
+    btn.textContent = '🧩 D1 受精回報';
   });
 }
 
