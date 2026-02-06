@@ -126,16 +126,15 @@ function updateFormVisibility() {
   const biopsyGroup = qs('biopsyFieldGroup');
   const planGroup = qs('planWhenAllObservingGroup');
 
-  // D3：預設改成「已完成（無觀察中）」
-  // 但不鎖住，讓你仍可手動改
-  if (specialMode === 'none' && stage === 3 && statusEl) {
-    statusEl.value = 'done';
-  }
-
-  // D7：預設「已完成（無觀察中）」
-  // 只在 stage 剛切到 D7 時自動帶入，避免覆蓋使用者手動選擇
-  if (specialMode === 'none' && stage === 7 && stageChanged && statusEl) {
-    statusEl.value = 'done';
+  // 依不同天數，切換「胚胎狀態」預設
+  // - D3：預設已完成
+  // - D5/D6：預設仍在觀察中
+  // - D7：預設已完成
+  // 只在「切換 stage 的那一下」套用，避免你在同一天手動改狀態時被覆蓋
+  if (specialMode === 'none' && stageChanged && statusEl) {
+    if (stage === 3) statusEl.value = 'done';
+    else if (stage === 5 || stage === 6) statusEl.value = 'observing';
+    else if (stage === 7) statusEl.value = 'done';
   }
 
   // 特殊情境時：仍可輸入 stage/date/name/num1，但不需要 num2/狀態判斷
