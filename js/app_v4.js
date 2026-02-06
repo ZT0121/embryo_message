@@ -12,6 +12,9 @@ window.addEventListener('load', () => {
   // 讓 HTML 的 onclick 也可用（保險）
   window.historyApi = historyApi;
 
+  // 更新按鈕
+  initUpdateButton();
+
   // 進階 D1 收合
   initAdvancedD1Toggle();
 
@@ -21,6 +24,63 @@ window.addEventListener('load', () => {
 });
 
 function qs(id) { return document.getElementById(id); }
+
+function setUpdateStatus(text) {
+  const el = qs('updateStatus');
+  if (!el) return;
+  el.textContent = text || '';
+}
+
+function initUpdateButton() {
+  const btn = qs('updateBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    try {
+      setUpdateStatus('正在檢查更新…');
+
+      if (!('serviceWorker' in navigator)) {
+        setUpdateStatus('此瀏覽器不支援自動更新（無 Service Worker）。');
+        return;
+      }
+
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) {
+        setUpdateStatus('尚未註冊 Service Worker，請重新整理一次。');
+        return;
+      }
+
+      // 1) 先向網路查一次
+      await reg.update();
+
+      // 2) 若有 waiting worker：請它立刻接管
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
+      // 3) 等 controller 換手後 reload
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloaded) return;
+        reloaded = true;
+        setUpdateStatus('已更新，重新載入中…');
+        window.location.reload();
+      });
+
+      // 如果沒有 waiting，也可能代表「已是最新版」或「更新下載中」
+      if (!reg.waiting) {
+        // 給它一點時間看會不會變成 waiting
+        setTimeout(() => {
+          // 如果還沒換 controller，就提示使用者
+          setUpdateStatus('若剛剛有更新，請手動重新整理一次（或稍後再按更新）。');
+        }, 1200);
+      }
+    } catch (e) {
+      console.error(e);
+      setUpdateStatus('更新失敗：請稍後再試，或重新整理頁面。');
+    }
+  });
+}
 
 function bindAutoUI() {
   const ids = [

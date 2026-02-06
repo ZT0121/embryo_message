@@ -23,7 +23,8 @@ const ASSETS = [
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
-  self.skipWaiting();
+  // 不在 install 階段強制接管，避免使用中突兀刷新
+  // 手動更新按鈕會送 SKIP_WAITING，再由 waiting worker 接管
 });
 
 self.addEventListener('activate', (e) => {
@@ -33,6 +34,13 @@ self.addEventListener('activate', (e) => {
     )
   );
   self.clients.claim();
+});
+
+// 接收「手動更新」指令，讓 waiting worker 立即接管
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 async function staleWhileRevalidate(req) {
