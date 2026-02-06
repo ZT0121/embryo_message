@@ -1,5 +1,5 @@
 // js/app_v4.js
-const APP_VERSION = "v3.1｜2026.02.06";
+const APP_VERSION = "v3.1.1｜2026.02.06";
 let historyApi;
 let lastStage;
 
@@ -15,6 +15,9 @@ window.addEventListener('load', () => {
 
   // 更新按鈕
   initUpdateButton();
+
+  // D1 解鎖（連點版本資訊）
+  initD1Unlock();
 
   // 進階 D1 收合
   initAdvancedD1Toggle();
@@ -138,13 +141,58 @@ function bindAutoUI() {
   });
 }
 
+function showD1UI(show) {
+  const box = qs('advancedD1');
+  if (!box) return;
+  box.classList.toggle('hidden', !show);
+}
+
+function setShowD1(value) {
+  localStorage.setItem('show_d1', value ? '1' : '0');
+  showD1UI(!!value);
+}
+
+function initD1Unlock() {
+  // 1) 讀取是否已解鎖
+  const shouldShow = localStorage.getItem('show_d1') === '1';
+  showD1UI(shouldShow);
+
+  // 2) 綁定「隱藏 D1」
+  const hideBtn = qs('hideD1Btn');
+  if (hideBtn) {
+    hideBtn.addEventListener('click', () => {
+      setShowD1(false);
+      // 順便收起內容
+      qs('d1Content')?.classList.add('hidden');
+    });
+  }
+
+  // 3) 連點版本資訊 5 下解鎖
+  const v = qs('versionInfo');
+  if (!v) return;
+
+  let clicks = 0;
+  let timer;
+
+  v.addEventListener('click', () => {
+    clicks += 1;
+    clearTimeout(timer);
+    timer = setTimeout(() => { clicks = 0; }, 1200);
+
+    if (clicks >= 5) {
+      clicks = 0;
+      setShowD1(true);
+      alert('已開啟 D1 受精回報');
+    }
+  });
+}
+
 function initAdvancedD1Toggle() {
   const btn = qs('toggleD1Btn');
   const content = qs('d1Content');
   if (!btn || !content) return;
 
   btn.addEventListener('click', () => {
-    const isHidden = content.classList.contains('hidden');
     content.classList.toggle('hidden');
     btn.textContent = '🧩 D1 受精回報';
   });

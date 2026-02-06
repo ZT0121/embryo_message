@@ -4,7 +4,7 @@
 // - JS/CSS：stale-while-revalidate（先回快取、背景更新）
 // - 其他檔案：cache-first
 
-const CACHE_NAME = 'embryo-app-v3.1-2026-02-06';
+const CACHE_NAME = 'embryo-app-v3.1.1-2026-02-06';
 
 const ASSETS = [
   './',
