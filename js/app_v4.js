@@ -1,6 +1,7 @@
 // js/app_v4.js
 const APP_VERSION = "v3.1｜2026.02.06";
 let historyApi;
+let lastStage;
 
 window.addEventListener('load', () => {
   // 共用 UI：版本顯示、日期預設、歷史收合、讀取歷史
@@ -119,12 +120,21 @@ function updateFormVisibility() {
   const statusEl = qs('status');
   const status = statusEl?.value || 'done';
 
+  const stageChanged = lastStage !== stage;
+  lastStage = stage;
+
   const biopsyGroup = qs('biopsyFieldGroup');
   const planGroup = qs('planWhenAllObservingGroup');
 
   // D3：預設改成「已完成（無觀察中）」
   // 但不鎖住，讓你仍可手動改
   if (specialMode === 'none' && stage === 3 && statusEl) {
+    statusEl.value = 'done';
+  }
+
+  // D7：預設「已完成（無觀察中）」
+  // 只在 stage 剛切到 D7 時自動帶入，避免覆蓋使用者手動選擇
+  if (specialMode === 'none' && stage === 7 && stageChanged && statusEl) {
     statusEl.value = 'done';
   }
 
