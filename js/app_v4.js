@@ -112,8 +112,8 @@ function decideTemplateType({ stage, status, num1, num2 }) {
   const hasObservingText = status === 'observing' ? '（有觀察中）' : '（無觀察中）';
 
   if (status === 'all_observing') {
-    const plan = qs('planWhenAllObserving')?.value || 'freeze';
-    return plan === 'biopsy_freeze'
+    const plan = qs('planWhenAllObserving')?.value || 'd5_freeze';
+    return plan === 'pgt_a'
       ? '5️⃣D5 切片＋冷凍（全部仍在觀察中）'
       : '5️⃣D5 冷凍（全部仍在觀察中）';
   }
@@ -123,8 +123,8 @@ function decideTemplateType({ stage, status, num1, num2 }) {
 
   // 防呆：如果選了 done/observing 但 num1=0，多半是操作誤差 → 直接走 all_observing
   if (n1 <= 0) {
-    const plan = qs('planWhenAllObserving')?.value || 'freeze';
-    return plan === 'biopsy_freeze'
+    const plan = qs('planWhenAllObserving')?.value || 'd5_freeze';
+    return plan === 'pgt_a'
       ? '5️⃣D5 切片＋冷凍（全部仍在觀察中）'
       : '5️⃣D5 冷凍（全部仍在觀察中）';
   }
