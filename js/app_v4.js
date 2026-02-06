@@ -181,8 +181,9 @@ function initD1Unlock() {
 
     if (clicks >= 5) {
       clicks = 0;
-      setShowD1(true);
-      alert('已開啟 D1 受精回報');
+      const currentlyOn = localStorage.getItem('show_d1') === '1';
+      setShowD1(!currentlyOn);
+      alert(currentlyOn ? '已關閉 D1 受精回報' : '已開啟 D1 受精回報');
     }
   });
 }
