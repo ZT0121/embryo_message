@@ -1,4 +1,4 @@
-// js/templates_v4.1.js
+// js/templates_v4.js
 (function () {
   // 將 type 字串 → 模板函式
   const TEMPLATES = {
