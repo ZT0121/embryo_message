@@ -24,9 +24,37 @@
   </script>
   
   <style>
+    @font-face {
+      font-family: "Sarasa Mono TC";
+      src: url("SarasaMonoTC-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Sarasa Mono TC";
+      src: url("SarasaMonoTC-SemiBold.ttf") format("truetype");
+      font-weight: 600 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --app-font: "Sarasa Mono TC", monospace;
+    }
+
+    html {
+      font-family: var(--app-font);
+    }
+
+    input, select, textarea, button {
+      font-family: inherit;
+    }
+
     /* 全域設定 */
     body {
-      font-family: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+      font-family: var(--app-font);
       font-size: 13px;
       background-color: #fdfaf7; /* 溫暖的米色背景 */
       color: #4b3b30;
