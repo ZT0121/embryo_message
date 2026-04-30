@@ -4,7 +4,7 @@
 // - JS/CSS：stale-while-revalidate（先回快取、背景更新）
 // - 其他檔案：cache-first
 
-const CACHE_NAME = 'embryo-app-v3.1.4-2026-03-18';
+const CACHE_NAME = 'embryo-app-v3.1.5-2026-04-30';
 
 const ASSETS = [
   './',
@@ -13,10 +13,15 @@ const ASSETS = [
   './sperm.html',
   './transfer_message.html',
   './manifest.json',
-  './icon-512.png',
-  './favicon.png',
+  './icons/favicon-16.png',
+  './icons/favicon-32.png',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/maskable-icon-192.png',
+  './icons/maskable-icon-512.png',
   './js/ui_common_v4.js',
-  './js/templates_v4.1.js',
+  './js/templates_v4.js',
   './js/app_v4.js',
   './css/style.css',
 ].filter(Boolean);
