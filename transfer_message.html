@@ -496,6 +496,11 @@ function refreshDoctorSelect(selectedName = '') {
   const previousValue = selectedName || select.value;
   select.innerHTML = '';
 
+  const blankOpt = document.createElement('option');
+  blankOpt.value = '';
+  blankOpt.textContent = '';
+  select.appendChild(blankOpt);
+
   unique.forEach(name => {
     const opt = document.createElement('option');
     opt.value = name;
