@@ -357,8 +357,8 @@
       </div>
       <div>
         <label>🩺 醫師 <button onclick="openRoster()" class="btn btn-outline btn-sm" style="margin-left:5px">名冊</button></label>
-        <input id="doctorName" placeholder="例：陳醫師" list="doctorList">
-        <datalist id="doctorList"></datalist>
+        <select id="doctorSelect" onchange="toggleDoctorCustom()"></select>
+        <input id="doctorName" placeholder="例：陳醫師" style="display:none; margin-top:0.5rem;">
       </div>
     </div>
 
@@ -474,7 +474,6 @@ function switchTab(targetId) {
 
 /* ===== 醫師名冊邏輯 ===== */
 const ROSTER_KEY = 'NUWA_DOCTOR_ROSTER';
-const RECENT_KEY = 'NUWA_DOCTOR_RECENT';
 
 function getList(key) {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
@@ -485,30 +484,72 @@ function initRoster() {
     const defaults = ["陳醫師", "廖醫師", "沈醫師", "詹醫師", "張醫師", "王醫師", "林醫師", "劉醫師", "朱醫師", "吳醫師", "何醫師", "洪醫師", "李醫師"];
     localStorage.setItem(ROSTER_KEY, JSON.stringify(defaults));
   }
-  refreshDatalist();
+  refreshDoctorSelect();
 }
 
-function refreshDatalist() {
+function refreshDoctorSelect(selectedName = '') {
   const roster = getList(ROSTER_KEY);
-  const recent = getList(RECENT_KEY);
-  const unique = [...new Set([...recent, ...roster])]; // 最近使用的排前面
+  const unique = [...new Set(roster)];
   
-  const dl = $('doctorList');
-  dl.innerHTML = '';
+  const select = $('doctorSelect');
+  const customInput = $('doctorName');
+  const previousValue = selectedName || select.value;
+  select.innerHTML = '';
+
   unique.forEach(name => {
     const opt = document.createElement('option');
     opt.value = name;
-    dl.appendChild(opt);
+    opt.textContent = name;
+    select.appendChild(opt);
   });
+
+  const customOpt = document.createElement('option');
+  customOpt.value = '__custom__';
+  customOpt.textContent = '自填醫師';
+  select.appendChild(customOpt);
+
+  if (previousValue && unique.includes(previousValue)) {
+    select.value = previousValue;
+    customInput.value = '';
+  } else if (previousValue === '__custom__' || customInput.value.trim()) {
+    select.value = '__custom__';
+  }
+
+  toggleDoctorCustom();
 }
 
-function saveRecent(name) {
-  if(!name) return;
-  let list = getList(RECENT_KEY).filter(n => n !== name);
-  list.unshift(name);
-  if(list.length > 10) list = list.slice(0, 10);
-  localStorage.setItem(RECENT_KEY, JSON.stringify(list));
-  refreshDatalist();
+function toggleDoctorCustom() {
+  const isCustom = $('doctorSelect').value === '__custom__';
+  $('doctorName').style.display = isCustom ? 'block' : 'none';
+  if (!isCustom) $('doctorName').value = '';
+}
+
+function getDoctorName() {
+  const selected = $('doctorSelect').value;
+  if (selected === '__custom__') return $('doctorName').value.trim();
+  return selected || '';
+}
+
+function setDoctorName(name = '') {
+  const roster = getList(ROSTER_KEY);
+  const unique = [...new Set(roster)];
+
+  if (!name) {
+    $('doctorSelect').selectedIndex = 0;
+    $('doctorName').value = '';
+  } else if (unique.includes(name)) {
+    $('doctorSelect').value = name;
+    $('doctorName').value = '';
+  } else {
+    $('doctorSelect').value = '__custom__';
+    $('doctorName').value = name;
+  }
+
+  toggleDoctorCustom();
+}
+
+function refreshDatalist() {
+  refreshDoctorSelect();
 }
 
 /* Modal 操作 */
@@ -569,9 +610,7 @@ function clearRows() {
 function genDoc() {
   const mode = $('tplDoc').value;
   const type = $('docType').value;
-  const doctor = $('doctorName').value.trim() || '醫師';
-  
-  if (doctor) saveRecent(doctor);
+  const doctor = getDoctorName() || '醫師';
 
   let msg = '';
   if (mode === 'doc_single') {
@@ -596,7 +635,7 @@ function genDoc() {
 }
 
 function clearDoc() {
-  $('doctorName').value = '';
+  setDoctorName();
   $('caseNo').value = '';
   $('caseName').value = '';
   clearRows();
